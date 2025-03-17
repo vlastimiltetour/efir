@@ -1,0 +1,35 @@
+# upstream for uWSGI
+upstream uwsgi_app {
+    server unix:/code/efir/uwsgi_app.sock;
+    }
+
+server {
+    listen       80;
+    server_name  www.efirthebrand.cz efirthebrand.cz;
+    return 301 https://$host$request_uri; #redirection to HTTPS
+}
+
+server {
+    listen               443 ssl;
+    ssl_certificate      /code/efir/ssl/efirthebrand.crt; 
+    ssl_certificate_key  /code/efir/ssl/efirthebrand.key;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+    server_name  www.efirthebrand.cz efirthebrand.cz;
+
+    error_log    stderr warn;
+    access_log   /dev/stdout main;
+
+    
+    location / {
+        include      /etc/nginx/uwsgi_params;
+        uwsgi_pass   uwsgi_app;
+        client_max_body_size 60M;
+    }
+    location /static/ {
+        alias /code/efir/static/;
+    }
+    location /media/ {
+        alias /code/efir/media/;
+    }
+}

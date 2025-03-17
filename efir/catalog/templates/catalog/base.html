@@ -1,0 +1,575 @@
+{% load i18n %} {% load static %} {% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>efir</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href='{% static "assets/img/favicon.png" %}' />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+     <!-- <link rel="stylesheet" href="https://etb.fra1.cdn.digitaloceanspaces.com/etb/static/styles.css">-->
+
+     
+    <link href='{% static "css/styles.css" %}' rel="stylesheet" />
+    <link href='{% static "css/cookie-consent.css" %}' rel="stylesheet" />
+    <link href='{% static "css/shop-styles.css" %}' rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <!-- Google Tag Manager -->
+<script>
+  function loadTrackingScripts() {
+    // Load Google Tag Manager
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-5N26B6BM');
+
+    // Load Google Analytics
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-Y80MNY89M7');
+  }
+
+  function unloadTrackingScripts() {
+    // Disable Google Tag Manager
+    window['dataLayer'] = [];
+    window['gtag'] = function () { window['dataLayer'].push(arguments); }
+
+    // Disable Google Analytics
+    gtag('js', new Date());
+    gtag('config', 'G-Y80MNY89M7');
+  }
+
+  // Call the function to check cookie consent on page load
+  checkCookieConsent();
+</script>
+<!-- Begin Leadhub Tracking Pixel Code -->
+<script>
+  (function(w,d,x,n,u,t,p,f,s,o){f='LHInsights';w[n]=w[f]=w[f]||function(n,d){
+  (w[f].q=w[f].q||[]).push([n,d])};w[f].l=1*new Date();w[f].p=p;s=d.createElement(x);
+  s.async=1;s.src=u+'?t='+t+(p?'&p='+p:'');o=d.getElementsByTagName(x)[0];o.parentNode.insertBefore(s,o)
+  })(window,document,'script','lhi','//www.lhinsights.com/agent.js','vKMJ5Kr2RiKA5iR');
+
+  lhi('pageview');
+</script>
+<!-- End Leadhub Pixel Code -->
+
+
+  <!-- Include Slick Carousel CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+
+    <!-- Include jQuery for Slick Carousel -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+    <!-- Include Slick Carousel JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <!-- CDN-->
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+
+  
+    <script>
+      const csrftoken = Cookies.get('csrftoken');
+    </script>
+
+    <!-- leadhub collect newsletter data -->
+      <!-- end leadhub collect data -->
+
+      <!-- Meta Pixel Code -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1140332501205415');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1140332501205415&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+    
+  </head>
+  
+
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5N26B6BM"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+      <!-- Body -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+      <div class="container">
+        <a class="navbar-brand" style="margin-top: 10px;" href="{% url 'catalog:home' %}">
+            <img src="{% static 'assets/img/logo.png' %}" height="60" alt="">
+          </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:katalog_vse' %}">Katalog</a>
+            </li>
+            <!-- <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Katalog</a>
+              <ul class="dropdown-menu" aria--labelledby="navbarDropdown">
+
+
+
+                <li class="dropdown-item">
+                  <a class="nav-link" href="{% url 'catalog:katalog_vse' %}">Vše</a>
+                </li>
+                <div class="dropdown-divider"></div>
+
+                {% for c in categories %}
+                <li
+                {% if category.slug == c.slug %}
+                class="nav-link"
+                {% endif %} class="dropdown-item">
+                
+                  <a class="nav-link" href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                </li>
+                {% endfor %}
+               
+               
+              </ul>
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:kontakty' %}">Kontakty</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:about' %}">O nás</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:doprava' %}">Doprava</a>
+            </li>
+       
+       
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:rozmery' %}">Rozměry</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" style="color: #b51900" href="{% url 'catalog:akce' %}">Akce</a>
+            </li>
+           <!-- <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:discover_your_set' %}">Objevte svůj vysněný set</a>
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:objednat_na_miru' %}">Šití na míru</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:certificates' %}">Dárkové certifikáty</a>
+            </li>
+          </ul>
+          <!-- Social Media Icons -->
+          <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
+            <li class="nav-item col-6 col-lg-auto">
+              <a class="nav-link py-2 px-0 px-lg-2" href="https://www.instagram.com/efir_the_brand/" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="navbar-nav-svg" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
+                  <title>Instagram</title>
+                  <path fill="currentColor" fill-rule="evenodd" d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+                </svg>
+                <small class="d-lg-none ms-2">Instagram</small>   
+              </a>
+            </li>
+            <li class="nav-item col-6 col-lg-auto">
+              <a class="nav-link py-2 px-0 px-lg-2" href="https://t.me/valeriya_ageeva" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="navbar-nav-svg" fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16">
+                  <title>Telegram</title>
+
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"/>
+                </svg>
+
+
+                <small class="d-lg-none ms-2">Telegram</small>   
+              </a>
+            </li>
+
+
+
+            <li class="nav-item col-6 col-lg-auto">
+              <a class="nav-link py-2 px-0 px-lg-2" href="https://wa.me/420774363883" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="navbar-nav-svg" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                  <title>Whatsapp</title>
+
+                  <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                </svg>
+                <small class="d-lg-none ms-2">Whatsapp</small>
+              </a>
+              
+                <li class="nav-item col-6 col-lg-auto">
+                  <a class="nav-link py-2 px-0 px-lg-2" href="mailto: efirthebrand@gmail.com" target="_blank" rel="noopener">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                  <title>E-mail</title>
+                  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                </svg>
+                <small class="d-lg-none ms-2">E-mail</small>
+
+
+
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="text-end"></div>
+    </div>
+    </div>
+
+
+
+    <!-- Cart 
+    <div class="cart-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">
+      <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+    </svg>
+    </div>
+  -->
+    </header> {% block title %} {% endblock %} {% block content %} {% endblock %}
+          <!-- Floating cart icon -->
+          
+          {% if cart|length > 0 and request.resolver_match.view_name != 'cart:cart_detail' and request.resolver_match.view_name != 'orders:new_order' %} <!-- this code hides cart icon on the cart detail-->
+          <style>
+            .cart-icon {
+              position: fixed;
+              bottom: 430px;
+              right: 20px;
+              width: 80px;
+              height: 80px;
+              background-color: var(--bs-gray-500);
+              border-radius: 50%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              color: #FFFFFF;
+              font-size: 30px;
+              cursor: pointer;
+              transition: transform 0.2s ease-in-out; /* Added transition property */
+              box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Added box-shadow property */
+            }
+            
+            .cart-icon:hover {
+              transform: scale(1.1); /* Increased size by 10% on hover */
+              box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Increased shadow size on hover */
+            }
+            
+            .cart-badge {
+              position: absolute;
+              top: 40px;
+              right: 20px;
+              width: 20px;
+              height: 20px;
+              background-color: #000000;
+              border-radius: 50%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-size: 12px;
+              color: #ffffff;
+            }
+          </style>
+          
+          <a href="{% url 'cart:cart_detail' %}">
+            <div class="cart-icon">
+              <i class="bi bi-bag"></i>
+              <div class="cart-badge">{{ cart|length}} </div>
+            </div>
+          </a>
+          {% else %}
+
+          {% endif %}
+
+          
+      <!-- end Floating cart icon -->
+
+<!-- Corrected Footer -->
+ <section style="background-color: black; color: white;">
+      
+  <div class="container border-top" >
+    <footer class="py-5">
+      <div class="row">
+        <div class="col-6 col-md-2 mb-3">
+          <h5>Katalog</h5>
+          <ul class="nav flex-column">
+            {% for c in categories %}
+            <li class="nav-item mb-2">
+              <a href="{{ c.get_absolute_url }}" class="nav-link p-0 text-white">{{ c.name }}</a>
+            </li>
+            {% endfor %}
+            <li class="nav-item mb-2">
+              <a href="{% url 'catalog:akce' %}" class="nav-link p-0 text-white">Akce</a>
+
+            </li>
+           
+          </ul>
+        </div>
+        <div class="col-6 col-md-2 mb-3">
+          <h5>Informace</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+              <a href="{% url 'catalog:kontakty' %}" class="nav-link p-0 text-white">Kontakty</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="{% url 'catalog:about' %}" class="nav-link p-0 text-white">O nás</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="{% url 'catalog:doprava' %}" class="nav-link p-0 text-white">Doprava</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="{% url 'catalog:rozmery' %}" class="nav-link p-0 text-white">Rozměry</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="{% url 'catalog:reklamace' %}" class="nav-link p-0 text-white">Reklamace</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="{% url 'catalog:ochrana' %}" class="nav-link p-0 text-white">Ochrana osobních údajů</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="{% url 'catalog:obchodni_podminky' %}" class="nav-link p-0 text-white">Obchodní podmínky</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-2 mb-5">
+          <h5>Kontakty</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 text-white">EFIR the brand
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 text-white">Sídlo: Příčná 1892/4, 110 00, Praha 1 Nové Město</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 text-white">Korespondenční adresa: Olšanská 54/3 Praha 3</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 text-white">IČO: 17092540</a>
+            </li>
+            
+          </ul>
+        </div>
+        <!-- subscribe form -->
+        <div class="col-md-5 offset-md-1 mb-5">
+          <form id="subscribe-form" class="needs-validation" novalidate action="{% url 'newsletter:subscribe' %}" method="post">
+             {% csrf_token %}
+             <h5>Odebírejte novinky</h5>
+             <p class="p-0 text-white">Nezmeškejte měsíční shrnutí novinek a vzrušujících událostí.</p>
+             <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                <input class="form-control" type="email" name="email" id="id_email" placeholder="Email address" required oninput="validateEmail()">
+                <button class="btn btn-light" type="submit">Odebírat</button>
+             </div>
+             <div class="mt-3">{{ subscribe_form.captcha }}</div>
+          </form>
+       </div>
+       
+        <!-- end subscribe form-->
+      </div>
+      <div class="d-flex flex-column flex-sm-row justify-content-between py-4 border-top">
+        <p class="order-sm-first">&copy; 2024 Efir The Brand. All rights reserved.</p> 
+        <p>Made by Vlastimil Tetour, 2024</p>
+        <ul class="list-unstyled d-flex">
+          <li class="ms-3">
+            <a class="link-dark" href="#">
+              <svg class="bi" width="24" height="24">
+                <use xlink:href="#twitter" />
+              </svg>
+            </a>
+          </li>
+          <li class="ms-3">
+            <a class="link-dark" href="#">
+              <svg class="bi" width="24" height="24">
+                <use xlink:href="#instagram" />
+              </svg>
+            </a>
+          </li>
+          <li class="ms-3">
+            <a class="link-dark" href="#">
+              <svg class="bi" width="24" height="24">
+                <use xlink:href="#facebook" />
+              </svg>
+            </a>
+          </li>
+        </ul>
+        <a href="/admin" style="color:white">Admin</a>
+      </div>
+    </footer>
+  </div>
+</section>
+
+<!-- End Corrected Footer-->
+
+    
+  
+
+
+
+  <!-- Cookie Button Start -->
+  <div id="myDIV" class="cookiescript_injected">
+    <div class="wrapper">
+      <!-- <img src="#" alt=""> -->
+      <header>
+        <h2 style="font-size: 80%;">{% trans "Souhlas se zpracováním Cookies" %}</h2>
+      </header>
+      <p style="font-size: 80%;">{% trans "Používáme cookies, abychom Vám umožnili pohodlné prohlížení webu a díky analýze provozu webu neustále zlepšovali jeho funkce, výkon a použitelnost.." %}</p>
+      <div class="buttons" style="display: flex; justify-content: space-between; align-items: center;">        <button id="accept" class="item" onclick="acceptCookie()" style="font-size: 80%; border-radius: 0;">{% trans "Přijmout" %}</button>
+        <button id="reject" class="item" onclick="rejectCookie()" style="font-size: 80%; background-color: white; color: red; border: 1px solid black; border-radius: 0;">{% trans "Odmítnout" %}</button>
+        <a href="{% url 'catalog:ochrana' %}"><button id="#" class="item" onclick="rejectCookie()" style="font-size: 80%; background-color: white; color: red; border: 1px solid black; border-radius: 0;">{% trans "Více" %}</button></a>
+      </div>
+    </div>
+  </div>
+  <script>
+    function validateEmail() {
+        var emailInput = document.getElementById("id_email");
+        var email = emailInput.value;
+        
+        // Custom validation logic
+        if (!email.includes('@') || email.indexOf('@') >= email.lastIndexOf('.')) {
+            emailInput.setCustomValidity("Please enter a valid email address.");
+        } else {
+            emailInput.setCustomValidity("");  // Clear any previous validation message
+        }
+        
+    }
+    
+</script>
+    
+  <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+  </script>
+  <script>
+    function acceptCookie() {
+      //document.cookie = "CookieBy=zuzikoko; max-age=" + 60 * 60 * 24 * 30 + "; path=/"; // Setting cookie for 1 month
+      document.cookie = "CookieBy=efirthebrand; max-age=" + 60 * 60 * 24 * 1 + "; path=/"; // Setting cookie for 1 month
+
+      checkCookieConsent();
+    }
+  
+    function rejectCookie() {
+      hideCookieBanner();
+      document.cookie = "CookieBy=efirthebrand; max-age=" + 60 * 60 * 24 * 1 + "; path=/"; // Setting cookie for 1 month
+
+      checkCookieConsent();
+    }
+  
+  
+
+    function checkCookieConsent() {
+      const pageShade = document.querySelector('.cookiescript_injected');
+      const cookieBox = document.querySelector(".wrapper");
+      let checkCookie = document.cookie.indexOf("CookieBy=efirthebrand"); // Check if our cookie is set
+      if (checkCookie != -1) { // If cookie is set, hide the cookie box and enable tracking
+        cookieBox.classList.add("hide");
+        pageShade.style.display = "none";
+        loadTrackingScripts();
+      } else { // If cookie is not set, show the cookie box and disable tracking
+        cookieBox.classList.remove("hide");
+        unloadTrackingScripts();
+      }
+    }
+  
+    function hideCookieBanner() {
+      const cookieBox = document.querySelector(".wrapper");
+      const pageShade = document.querySelector('.cookiescript_injected');
+      cookieBox.style.display = "none";
+      pageShade.style.display = "none";
+    }
+  
+    // This code checks for the cookie and hides/shows the cookie box based on the cookie's presence.
+    checkCookieConsent();
+  </script>
+  
+
+    <!-- JavaScript Code -->
+    
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src='{% static "js/scripts.js" %}'></script>
+    <!-- Hover Dropdown-->
+    <script>
+      const dropdown = document.querySelector('.dropdown');
+      dropdown.addEventListener('mouseenter', function() {
+        this.querySelector('.dropdown-menu').classList.add('show');
+      });
+      dropdown.addEventListener('mouseleave', function() {
+        this.querySelector('.dropdown-menu').classList.remove('show');
+      });
+    </script>
+
+
+<script>
+  // JavaScript function to validate email, existing in your code
+  function validateEmail() {
+      // Your validation logic here
+  }
+  
+  // Function to handle form submission
+  document.addEventListener('DOMContentLoaded', function () {
+      const subscribeForm = document.getElementById('subscribe-form');
+  
+      subscribeForm.addEventListener('submit', function (e) {
+          e.preventDefault(); // Prevent the default form submission
+  
+          // Extract data from the form
+          const email = document.getElementById('id_email').value;
+  
+          // Here, include additional data as needed
+          const userData = {
+              email: email,
+              subscribe: ['newsletters'],
+              // Include additional user data as needed
+              // user_id: USER_ID, // You need to provide a way to get this, maybe it's already available in your session
+          };
+  
+          // Call the lhi function with the userData
+          lhi('Identify', userData);
+  
+          // Here, proceed to submit the form data to your server
+          // This could involve an AJAX request or simply allowing the form to submit if you're not handling the submission asynchronously
+          this.submit(); // If you're handling the form data asynchronously, replace this with your AJAX call
+      });
+  });
+  </script>
+  </body>
+</html>

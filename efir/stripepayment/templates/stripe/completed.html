@@ -1,0 +1,21 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load humanize %}
+
+{% block content %}
+        
+    <div style="padding-bottom: 10%;">
+        <div class="container px-5 px-lg-5 mt-5">
+            <center>
+            <h1> Vaše objednávka č. {{order.etb_id}}  byla zaplacena  </h1>
+            <p> Potvrzení bylo zasláno na email. </p>
+                <br>
+                
+                <div><a href="{% url 'catalog:home' %}"><button class="btn btn-primary btn-md text-white m-1" style="background-color:  #000000; border-color: white;">Zpět do obchodu</button></a></div>
+            
+            </center>
+        </div>
+    </div>
+
+{% endblock %}

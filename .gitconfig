@@ -1,0 +1,9 @@
+[user]
+	name = vlk
+	email = v.tetour@gmail.com
+[safe]
+	directory = /home/etb
+[pack]
+	windowMemory = 1g
+	packSizeLimit = 1g
+	deltaCacheSize = 1g
