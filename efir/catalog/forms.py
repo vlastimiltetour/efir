@@ -29,6 +29,32 @@ class ContactForm(forms.Form):
 
 
 class FilterForm(forms.Form):
+    sorting_choices = [
+        ("price", "Cena vzestupně"),
+        ("-price", "Cena sestupně"),
+        ("name", "Název A-Z"),
+        ("-name", "Název Z-A"),
+    ]
+
+    zpusob_vyroby_choices = [
+        ("Skladem", "Skladem"),
+        ("Na Míru", "Na Míru"),
+    ]
+
+    cut_choices_manual = [
+        ("Brazilky", "Brazilky"),
+        ("Brazilky na gumičkách", "Brazilky na gumičkách"),
+        ("V-string", "V-string"),
+        ("Vysoká tanga", "Vysoká tanga"),
+        ("Podvazkový pas s gumičkami", "Podvazkový pas s gumičkami"),
+        ("Bezkosticová podprsenka", "Bezkosticová podprsenka"),
+        ("Podprsenka s kosticemi", "Podprsenka s kosticemi"),
+        (
+            "Podprsenka s kosticemi a otevřeným košíčkem",
+            "Podprsenka s kosticemi a otevřeným košíčkem",
+        ),
+    ]
+
     def custom_sort(size):
         if size[:-1].isdigit():
             return int(size[:-1]), size[-1]
@@ -57,87 +83,66 @@ class FilterForm(forms.Form):
         print(knickers)
         return knickers + bras
 
-    all_sizes = Inventory.objects.all()
-    all_sizes = all_sizes.distinct()
-    all_sizes = all_sizes.values_list("size")
-    letters_only = [size[0].strip("()") for size in all_sizes if size[0]]
-    sorted_sizes = sorted(letters_only, key=custom_sort)
-    resorted_sizes = prioritize_sizes(sorted_sizes)
-    tuple_sizes = [(size, size) for size in resorted_sizes]
-    print("size_choices:", resorted_sizes)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    products = Product.objects.all()
+        try:
+            all_sizes = Inventory.objects.all()
+            all_sizes = all_sizes.distinct()
+            all_sizes = all_sizes.values_list("size")
+            letters_only = [size[0].strip("()") for size in all_sizes if size[0]]
+            sorted_sizes = sorted(letters_only, key=self.custom_sort)
+            resorted_sizes = self.prioritize_sizes(sorted_sizes)
+            [(size, size) for size in resorted_sizes]
 
-    cuts_all = products.values_list("short_description").distinct()
-    cuts_letters_only = [x[0].strip("()") for x in cuts_all if x[0]]
-    cuts_all_list = set(cuts_letters_only)
-    cut_choices = [(i, i) for i in cuts_all_list]
+            products = Product.objects.all()
 
-    cut_choices_manual = [
-        ("Brazilky", "Brazilky"),
-        ("Brazilky na gumičkách", "Brazilky na gumičkách"),
-        ("V-string", "V-string"),
-        ("Vysoká tanga", "Vysoká tanga"),
-        ("Podvazkový pas s gumičkami", "Podvazkový pas s gumičkami"),
-        ("Bezkosticová podprsenka", "Bezkosticová podprsenka"),
-        ("Podprsenka s kosticemi", "Podprsenka s kosticemi"),
-        (
-            "Podprsenka s kosticemi a otevřeným košíčkem",
-            "Podprsenka s kosticemi a otevřeným košíčkem",
-        ),
-    ]
+            cuts_all = products.values_list("short_description").distinct()
+            cuts_letters_only = [x[0].strip("()") for x in cuts_all if x[0]]
+            cuts_all_list = set(cuts_letters_only)
+            [(i, i) for i in cuts_all_list]
 
-    categories = Category.objects.all()
-    categories = categories.values_list("name").distinct()
-    categories = [name[0].strip("()") for name in categories]
-    categories = [(i, i) for i in categories]
+            categories = Category.objects.all()
+            categories = categories.values_list("name").distinct()
+            categories = [name[0].strip("()") for name in categories]
+            categories = [(i, i) for i in categories]
+        except:
+            categories = []
 
-    size_selection = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        choices=tuple_sizes,
-        label="Velikost",
-        required=False,
-    )
+        self.fields["size_selection"] = forms.MultipleChoiceField(
+            widget=forms.CheckboxSelectMultiple,
+            choices=self.sorting_choices,
+            label="Velikost",
+            required=False,
+        )
 
-    sorting_choices = [
-        ("price", "Cena vzestupně"),
-        ("-price", "Cena sestupně"),
-        ("name", "Název A-Z"),
-        ("-name", "Název Z-A"),
-    ]
+        self.fields["sort_by_price"] = forms.MultipleChoiceField(
+            widget=forms.CheckboxSelectMultiple,
+            choices=self.sorting_choices,
+            label="Radit podle",
+            required=False,
+        )
 
-    sort_by_price = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        choices=sorting_choices,
-        label="Radit podle",
-        required=False,
-    )
+        self.fields["zpusob_vyroby"] = forms.MultipleChoiceField(
+            widget=forms.CheckboxSelectMultiple,
+            choices=self.zpusob_vyroby_choices,
+            label="Zpusob vyroby",
+            required=False,
+        )
 
-    zpusob_vyroby_choices = [
-        ("Skladem", "Skladem"),
-        ("Na Míru", "Na Míru"),
-    ]
+        self.fields["cut_selection"] = forms.MultipleChoiceField(
+            widget=forms.CheckboxSelectMultiple,
+            choices=self.cut_choices_manual,
+            label="Volba střihu",
+            required=False,
+        )
 
-    zpusob_vyroby = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        choices=zpusob_vyroby_choices,
-        label="Zpusob vyroby",
-        required=False,
-    )
-
-    cut_selection = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        choices=cut_choices_manual,
-        label="Volba střihu",
-        required=False,
-    )
-
-    category_selection = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        choices=categories,
-        label="Volba kategorie",
-        required=False,
-    )
+        self.fields["category_selection"] = forms.MultipleChoiceField(
+            widget=forms.CheckboxSelectMultiple,
+            choices=categories,
+            label="Volba kategorie",
+            required=False,
+        )
 
 
 class CreateSetForm(forms.Form):
