@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from orders.mail_confirmation import (order_shipped,
-                                      send_paid_offer_confirmation)
+                                      send_paid_offer_confirmation, customer_order_email_confirmation)
 from orders.models import Order
 
 logger = logging.getLogger(__name__)
@@ -31,11 +31,10 @@ def send_email_when_order_paid(sender, instance, **kwargs):
 
     # Check if the order is marked as shipped and the shipped email hasn't been sent
     if instance.paid and not instance.paid_confirmation_sent:
-        send_paid_offer_confirmation(order_id=instance.id)
+        customer_order_email_confirmation(order_id=instance.id)
         logger.info(
             f"======= Order {instance.id} has been dispatched to transport service."
         )
         Order.objects.filter(id=instance.id).update(paid_confirmation_sent=True)
-
 
         # Update the field confirmation_sent
