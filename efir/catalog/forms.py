@@ -55,12 +55,14 @@ class FilterForm(forms.Form):
         ),
     ]
 
+    @staticmethod
     def custom_sort(size):
         if size[:-1].isdigit():
             return int(size[:-1]), size[-1]
         else:
             return float("inf"), size
 
+    @staticmethod
     def prioritize_sizes(n):
         knickers_dict = {
             "XS": 1,
@@ -80,7 +82,6 @@ class FilterForm(forms.Form):
 
         knickers.sort(key=lambda x: knickers_dict[x])
 
-        print(knickers)
         return knickers + bras
 
     def __init__(self, *args, **kwargs):
@@ -93,7 +94,7 @@ class FilterForm(forms.Form):
             letters_only = [size[0].strip("()") for size in all_sizes if size[0]]
             sorted_sizes = sorted(letters_only, key=self.custom_sort)
             resorted_sizes = self.prioritize_sizes(sorted_sizes)
-            [(size, size) for size in resorted_sizes]
+            size_choices = [(size, size) for size in resorted_sizes]
 
             products = Product.objects.all()
 
@@ -106,12 +107,14 @@ class FilterForm(forms.Form):
             categories = categories.values_list("name").distinct()
             categories = [name[0].strip("()") for name in categories]
             categories = [(i, i) for i in categories]
-        except:
+            print('cateogires', categories)
+        except ValueError as e:
+            print('error type of e', e)
             categories = []
 
         self.fields["size_selection"] = forms.MultipleChoiceField(
             widget=forms.CheckboxSelectMultiple,
-            choices=self.sorting_choices,
+            choices=size_choices,
             label="Velikost",
             required=False,
         )
@@ -143,7 +146,6 @@ class FilterForm(forms.Form):
             label="Volba kategorie",
             required=False,
         )
-
 
 class CreateSetForm(forms.Form):
     # captcha = ReCaptchaField()
