@@ -22,8 +22,8 @@ import logging
 # Set up the logging configuration
 logging.basicConfig(level=logging.DEBUG)
 
-logging.getLogger('botocore').setLevel(logging.CRITICAL)
-logging.getLogger('boto3').setLevel(logging.CRITICAL)
+logging.getLogger("botocore").setLevel(logging.CRITICAL)
+logging.getLogger("boto3").setLevel(logging.CRITICAL)
 
 try:
     logging.info("Loading local Env Module")
@@ -88,7 +88,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.cache.UpdateCacheMiddleware", # caching page for scrolling restoration
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware", # caching page for scrolling restoration
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -181,7 +183,8 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520  # 20 MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 20971520  # 20 MB
 
 AWS_S3_ENDPOINT_URL = (
-    "https://etb.fra1.digitaloceanspaces.com"  # Change to your region's endpoint
+    #"https://etb.fra1.digitaloceanspaces.com"  # Change to your region's endpoint
+    "https://etb.fra1.cdn.digitaloceanspaces.com"
 )
 
 
