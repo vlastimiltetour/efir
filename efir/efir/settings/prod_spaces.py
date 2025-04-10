@@ -11,7 +11,7 @@ AWS_ACCESS_KEY_ID = str(os.getenv("AWS_ACCESS_KEY_ID"))
 AWS_SECRET_ACCESS_KEY = str(os.getenv("AWS_SECRET_ACCESS_KEY"))
 AWS_STORAGE_BUCKET_NAME = "etb"
 AWS_DEFAULT_ACL = "public-read"
-AWS_S3_ENDPOINT_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.fra1.cdn.digitaloceanspaces.com"
+AWS_S3_ENDPOINT_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.fra1.digitaloceanspaces.com"
 
 AWS_S3_REGION_NAME = "fra1"
 
@@ -25,7 +25,7 @@ AWS_S3_OBJECT_PARAMETERS = {
 
 
 # Static files settings: this works
-STATIC_URL = f"https://{AWS_S3_ENDPOINT_URL}/static/"
+STATIC_URL = "https://etb.fra1.cdn.digitaloceanspaces.com/static/"
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 
