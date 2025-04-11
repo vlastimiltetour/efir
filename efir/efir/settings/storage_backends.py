@@ -19,9 +19,9 @@ class StaticStorage(S3Boto3Storage):
             name = name.lstrip("/")
             return safe_join(self.location, name)
 
-
 class MediaStorage(S3Boto3Storage):
     location = "media"
-    file_overwrite = False
     default_acl = "public-read"
-    querystring_auth = True
+    file_overwrite = False
+    querystring_auth = False  # <- disables signed URLs
+    custom_domain = "etb.fra1.cdn.digitaloceanspaces.com/etb" 

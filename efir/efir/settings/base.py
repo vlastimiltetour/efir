@@ -271,7 +271,9 @@ AWS_S3_OBJECT_PARAMETERS = {
 # Public media files
 AWS_PUBLIC_MEDIA_LOCATION = "media"
 DEFAULT_FILE_STORAGE = "efir.settings.storage_backends.MediaStorage"
-MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_PUBLIC_MEDIA_LOCATION}/"
+MEDIA_URL = f"https://etb.fra1.cdn.digitaloceanspaces.com/{AWS_PUBLIC_MEDIA_LOCATION}/"
+
+
 
 # Optional: Set S3 object parameters (again, if needed)
 AWS_S3_OBJECT_PARAMETERS = {
