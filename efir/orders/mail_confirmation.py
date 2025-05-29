@@ -8,8 +8,11 @@ from smtplib import (SMTPDataError, SMTPException, SMTPRecipientsRefused,
 import weasyprint
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
+from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from requests.exceptions import SSLError
+
+
 
 from .models import Order
 
@@ -111,7 +114,12 @@ from .models import Order
 
 
 def unpaid_customer_order_email_confirmation(order_id):
-    order = Order.objects.get(id=order_id)
+    try:
+        order = Order.objects.get(id=order_id)
+    
+    except Order.DoesNotExist as e:
+        logger.warning(f"Order with ID {order_id} not found. Skipping email.")
+        return 
 
     html_content = render_to_string(
         "orders/unpaid_customer_email_confirmation.html", {"order": order}

@@ -244,24 +244,18 @@ def payment_notification(request):
 def payment_completed(request):
     order_id = request.session.get("order_id")
     # order_id = 364
-    cart = Cart(request)
+    Cart(request)
     certificate = False
     order = get_object_or_404(Order, id=order_id)
     order_items = OrderItem.objects.filter(order=order)
 
-    """for order_item in order_items:
-        print(order_item.product.name)
-        if (str(order_item.product.category)) == "Dárkové certifikáty":   
-            certificate = True     """
     certificate = any(
         str(order_item.product.category) == "Dárkové certifikáty"
         for order_item in order_items
     )
-    print("tady se snazim vytisknout certificate", certificate)
 
     try:
         if certificate is True:
-            print("ANO ANO ANO YES posli potvzrni certifikatu")
             try:
                 certificate_order_email_confirmation(order_id)
                 time.sleep(5)
@@ -272,7 +266,6 @@ def payment_completed(request):
 
         else:
             try:
-                print("NE NE NE NE NE neposli potvrzeni certifikatu")
                 customer_order_email_confirmation(order_id)
                 time.sleep(5)
             except UnicodeEncodeError as e:
@@ -329,9 +322,12 @@ def payment_canceled(request):
 
     try:
         time.sleep(5)
-        unpaid_customer_order_email_confirmation(order_id)
+        if order_id:
+            unpaid_customer_order_email_confirmation(order_id)
 
-        print("customer email byl odeslan ale neni zaplaceno")
+            logging.info(
+                        f"customer email byl odeslan ale neni zaplaceno. Local environment, no email sending service. Order ID: {order_id}"
+                    )
 
     except ssl.SSLCertVerificationError:
         logging.info(
@@ -488,12 +484,10 @@ def ppl_track_order():
     pass
 
 
-
-
-def manual_payment_completed(request, order_id,vendor_type):
+def manual_payment_completed(request, order_id, vendor_type):
     order_id = order_id
     # order_id = 364
-    
+
     certificate = False
     order = get_object_or_404(Order, id=order_id)
     order_items = OrderItem.objects.filter(order=order)
@@ -507,7 +501,6 @@ def manual_payment_completed(request, order_id,vendor_type):
         for order_item in order_items
     )
     print("tady se snazim vytisknout certificate", certificate)
-
 
     if settings.DEBUG:
         # Django is running in local settings
