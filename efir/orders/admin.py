@@ -84,6 +84,7 @@ class OrderAdmin(admin.ModelAdmin):
             url = reverse("stripepayment:manually_create_PPL", args=[obj.id])
             return mark_safe(f'<a href="{url}">Vytvořit etiketu</a>')
 
+
     download_label.short_description = "PDF Label"
 
     # list_editable = ["shipped"]  # Add the "shipped" field to make it editable

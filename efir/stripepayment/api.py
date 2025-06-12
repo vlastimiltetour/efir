@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from orders.models import Order
+from django.core.files import File
 
 from .auth import get_oauth_token
 
@@ -222,62 +223,46 @@ def package_trigger(request):
 
 
 def download_pdf(batch_id, token, order_id):
-    # order_id = request.session.get("order_id")
-
-    # order_id = 289
+    import logging
     order = get_object_or_404(Order, id=order_id)
-    # DHL API endpoint and parameters
 
-    url = f"https://api.dhl.com/ecs/ppl/myapi2/shipment/batch/{batch_id}/label"
-    params = {"pageSize": "A4", "position": 1, "limit": 200, "offset": 0}
-    headers = {
-        "Authorization": f"Bearer {token}",  # Replace with your actual token
-    }
+    url = f"{settings.API_BASE_URL}/ecs/ppl/myapi2/shipment/batch/{batch_id}/label"
     params = {"pageSize": "A4", "position": "1", "limit": "200", "offset": "0"}
+    headers = {"Authorization": f"Bearer {token}"}
 
-    # Send the GET request
-    time.sleep(5)
+    time.sleep(5)  # is this necessary? Maybe to wait for label generation?
 
     response = requests.get(url, headers=headers, params=params)
 
-    if response.status_code == 200 or 201:
-        # Save the PDF into the STATIC_ROOT directory
-        try:
-            data = response.json()
-            print(data)
+    if response.status_code in [200, 201]:
+        # Don't try to parse JSON because response is PDF binary
+        file_name = f"ppl_etiketa_{batch_id}.pdf"
 
-            ##shipment_number = data.get('shipmentNumber', [])
-            # print('this is shimpent number V2:', shipment_number)
-        except Exception as e:
-            print("exception", e)
-
-        file_name = f"ppl_etiketa{batch_id}.pdf"
-        file_path = os.path.join(settings.STATIC_ROOT, file_name)
-        with open(file_path, "wb") as f:
-            f.write(response.content)
-        print("PDF saved successfully.")
-
-        # Move the PDF to catalog/ppl_labels directory
-        target_directory = os.path.join(settings.MEDIA_ROOT, "catalog/ppl_labels")
-        os.makedirs(target_directory, exist_ok=True)  # Ensure target directory exists
+        # Save directly to media folder (avoid static for user files)
+        target_directory = os.path.join(settings.MEDIA_ROOT, "catalog", "ppl_labels")
+        os.makedirs(target_directory, exist_ok=True)
         target_path = os.path.join(target_directory, file_name)
-        shutil.move(file_path, target_path)
-        print("PDF moved to catalog/ppl_labels directory.")
-    else:
-        # Print detailed error information
-        print(f"Error: Failed to download PDF, status code: {response.status_code}")
-        print(response.text)
 
-    try:
-        order = Order.objects.get(id=order_id)
-        order.label = target_path
-        order.save()
+        try:
+            with open(target_path, "wb") as f:
+                f.write(response.content)
+            print("PDF saved successfully at", target_path)
+        except Exception as e:
+            logging.error(f"Error saving PDF: {e}")
+            return
+
+        # Save relative path or file to order.label
+        # If order.label is a FileField:
+       
+
+        with open(target_path, "rb") as f:
+            django_file = File(f)
+            order.label.save(file_name, django_file, save=True)
+
         print("Order label field updated successfully.")
-    except Order.DoesNotExist:
-        print(f"Error: Order with id {order_id} does not exist.")
-
-    return
-
+    else:
+        print(f"Failed to download PDF, status code: {response.status_code}")
+        print(response.text)
 
 
 '''download_pdf('9cd03061-9047-4ee6-a41d-d0d08039ff92', 
