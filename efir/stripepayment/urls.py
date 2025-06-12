@@ -12,6 +12,7 @@ urlpatterns = [
     path("packetapdf/", views.packetLabelPdf, name="packetLabelPdf"),
     path("webhook/", webhooks.stripe_webhook, name="stripe_webhook"),
     path("create_label/", views.ppl_create_label_view, name="create_label"),
+    path("create_label/<int:order_id>", views.ppl_create_label_view, name="create_label"),
     path(
         "unsuccessful_payment/", views.unsuccessful_payment, name="unsuccessful_payment"
     ),
