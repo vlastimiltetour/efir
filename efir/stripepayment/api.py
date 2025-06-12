@@ -228,7 +228,7 @@ def download_pdf(batch_id, token, order_id):
     order = get_object_or_404(Order, id=order_id)
     # DHL API endpoint and parameters
 
-    url = f"https://api-dev.dhl.com/ecs/ppl/myapi2/shipment/batch/{batch_id}/label"
+    url = f"https://api.dhl.com/ecs/ppl/myapi2/shipment/batch/{batch_id}/label"
     params = {"pageSize": "A4", "position": 1, "limit": 200, "offset": 0}
     headers = {
         "Authorization": f"Bearer {token}",  # Replace with your actual token
