@@ -226,7 +226,7 @@ def download_pdf(batch_id, token, order_id):
     import logging
     order = get_object_or_404(Order, id=order_id)
 
-    url = f"{settings.API_BASE_URL}/ecs/ppl/myapi2/shipment/batch/{batch_id}/label"
+    url = f"{settings.API_BASE_URL}/shipment/batch/{batch_id}/label"
     params = {"pageSize": "A4", "position": "1", "limit": "200", "offset": "0"}
     headers = {"Authorization": f"Bearer {token}"}
 
