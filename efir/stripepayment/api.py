@@ -222,33 +222,20 @@ def package_trigger(request):
 
 
 def download_pdf(batch_id, token, order_id):
-    # order_id = request.session.get("order_id")
-
-    # order_id = 289
     order = get_object_or_404(Order, id=order_id)
-    # DHL API endpoint and parameters
     url = f"{settings.API_BASE_URL}/shipment/batch/{batch_id}/label"
-    params = {"pageSize": "A4", "position": 1, "limit": 200, "offset": 0}
-    headers = {
-        "Authorization": f"Bearer {token}",  # Replace with your actual token
-    }
     params = {"pageSize": "A4", "position": "1", "limit": "200", "offset": "0"}
+    headers = {"Authorization": f"Bearer {token}"}
 
-    # Send the GET request
     time.sleep(5)
-
     response = requests.get(url, headers=headers, params=params)
 
-    if response.status_code == 200 or 201:
-        # Save the PDF into the STATIC_ROOT directory
+    if response.status_code in (200, 201):
         try:
             data = response.json()
-            print(data)
-
-            ##shipment_number = data.get('shipmentNumber', [])
-            # print('this is shimpent number V2:', shipment_number)
+            print("Response JSON:", data)
         except Exception as e:
-            print("exception", e)
+            print("Failed to parse JSON:", e)
 
         file_name = f"ppl_etiketa{batch_id}.pdf"
         file_path = os.path.join(settings.STATIC_ROOT, file_name)
@@ -256,26 +243,21 @@ def download_pdf(batch_id, token, order_id):
             f.write(response.content)
         print("PDF saved successfully.")
 
-        # Move the PDF to catalog/ppl_labels directory
         target_directory = os.path.join(settings.MEDIA_ROOT, "catalog/ppl_labels")
-        os.makedirs(target_directory, exist_ok=True)  # Ensure target directory exists
+        os.makedirs(target_directory, exist_ok=True)
         target_path = os.path.join(target_directory, file_name)
         shutil.move(file_path, target_path)
         print("PDF moved to catalog/ppl_labels directory.")
+
+        try:
+            order.label = target_path
+            order.save()
+            print("Order label field updated successfully.")
+        except Exception as e:
+            print(f"Failed to update order label: {e}")
     else:
-        # Print detailed error information
         print(f"Error: Failed to download PDF, status code: {response.status_code}")
         print(response.text)
-
-    try:
-        order = Order.objects.get(id=order_id)
-        order.label = target_path
-        order.save()
-        print("Order label field updated successfully.")
-    except Order.DoesNotExist:
-        print(f"Error: Order with id {order_id} does not exist.")
-
-    return
 
 
 
