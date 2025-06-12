@@ -81,7 +81,8 @@ class OrderAdmin(admin.ModelAdmin):
             url = reverse("orders:download_ppl_label", args=[file_name])
             return mark_safe(f'<a href="{url}" download>PPL Etiketa</a>')
         else:
-            return "-"
+            url = reverse("stripepayment:manually_create_PPL", args=[obj.id])
+            return mark_safe(f'<a href="{url}">Vytvořit etiketu</a>')
 
     download_label.short_description = "PDF Label"
 

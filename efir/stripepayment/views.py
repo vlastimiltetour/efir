@@ -523,3 +523,10 @@ def manual_payment_completed(request, order_id, vendor_type):
         print("Manual payment. Osobni doruceni.")
 
     return render(request, "stripe/completed.html", {"order": order})
+
+
+from django.shortcuts import redirect
+
+def manually_create_PPL(request, order_id):
+    ppl_create_label_view(request, order_id)
+    return redirect("admin:orders_order_changelist")  # or wherever you want
