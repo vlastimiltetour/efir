@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views, webhooks
+from stripepayment.api import *
 
 app = "stripepayment"
 
@@ -13,6 +14,7 @@ urlpatterns = [
     path("webhook/", webhooks.stripe_webhook, name="stripe_webhook"),
     path("create_label/", views.ppl_create_label_view, name="create_label"),
     path("create_label/<int:order_id>", views.ppl_create_label_view, name="create_label"),
+    path("download-label/<str:batch_id>/<str:token>/<int:order_id>/", download_pdf, name="download_pdf"),
     path(
         "unsuccessful_payment/", views.unsuccessful_payment, name="unsuccessful_payment"
     ),
