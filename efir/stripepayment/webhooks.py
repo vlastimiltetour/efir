@@ -4,16 +4,18 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from orders.models import Order
+
 import logging
-logging.basicConfig(level=logging.INFO)
+
 logger = logging.getLogger(__name__)
 
-
+    
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body
     sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
     event = None
+    logger.info("Stripe webhook received", payload, sig_header, event)
 
     try:
         event = stripe.Webhook.construct_event(
@@ -29,7 +31,17 @@ def stripe_webhook(request):
     if event.type == "checkout.session.completed":
         session = event.data.object
         if session.mode == "payment" and session.payment_status == "paid":
-            updated = Order.objects.filter(etb_id=session.client_reference_id, paid=False).update(paid=True, stripe_id=session.payment_intent)
-            logger.info('webhook has marked this order as paid')
+            try:
+                order = Order.objects.get(etb_id=session.client_reference_id)
+            except Order.DoesNotExist:
+                return HttpResponse(status=404)
+            # mark order as paid
+
+            order.paid = True
+            print("oh lalalala hurarara aaaaaa ==== the order has been paid!!! ")
+            # store Stripe payment ID
+            order.stripe_id = session.payment_intent
+            order.save()
+            # launch asynchronous task
 
     return HttpResponse(status=200)

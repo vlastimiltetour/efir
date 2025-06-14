@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 def customer_order_email_confirmation(order_id: int) -> bool:
     try:
         order = Order.objects.get(id=order_id)
+        print("IN EMAIL HELPER → paid =", order.paid)
     except Order.DoesNotExist:
         logger.error('Order with this ID does not exist', order_id)
         return False
@@ -83,7 +84,9 @@ def customer_order_email_confirmation(order_id: int) -> bool:
             order_id,
         )
         order.paid_confirmation_sent = True
-        order.save()
+        order.paid = True
+        order.save(update_fields=["paid_confirmation_sent", "paid"])
+
 
     except (ssl.SSLCertVerificationError, SSLError) as e:
         logger.error("Failed to send email due to SSL error: %s", e)
