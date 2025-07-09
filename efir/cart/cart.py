@@ -158,14 +158,17 @@ class Cart:
         zpusob_vyroby_type_count = 0
         try:
             country = self.country.upper()
+            print("country", country)
         except AttributeError:
-            country = self.country
+            country = self.country.upper()
+            print("country", country)
 
         shipping_type = self.shipping
         # price
         ppl_prices = {
             "CZ": 129,
             "PL": 180,
+            "CH": 180,
             "SK": 180,
             "DE": 180,
             "BE": 180,
