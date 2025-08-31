@@ -6,8 +6,7 @@ from inventory.models import Inventory
 
 from .models import (BackgroundPhoto, Category, Certificate, LeftPhoto,
                      MappingSetNaMiru, Photo, Product, ProductSet, RightdPhoto,
-                     UniqueSetCreation, ZpusobVyroby)
-
+                     UniqueSetCreation, ZpusobVyroby, AboutPhoto4, AboutPhoto3, AboutPhoto1, AboutPhoto2)
 
 # Register your models here.
 class PhotoAdmin(admin.StackedInline):
@@ -38,6 +37,21 @@ class LeftPhotoAdmin(admin.ModelAdmin):
 class RightPhotoAdmin(admin.ModelAdmin):
     list_display = ["name"]
 
+@admin.register(AboutPhoto1)
+class AboutPhoto1Admin(admin.ModelAdmin):
+    list_display = ["name"]
+    
+@admin.register(AboutPhoto2)
+class AboutPhoto2Admin(admin.ModelAdmin):
+    list_display = ["name"]
+
+@admin.register(AboutPhoto3)
+class AboutPhoto3Admin(admin.ModelAdmin):
+    list_display = ["name"]
+
+@admin.register(AboutPhoto4)
+class AboutPhoto4Admin(admin.ModelAdmin):
+    list_display = ["name"]
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -169,35 +183,36 @@ class UniqueSetCreationAdmin(admin.ModelAdmin):
     )
 
     def export_to_excel(self, request, queryset):
-        response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = 'attachment; filename="dotazniky_objev_set.xls"'
+        response = HttpResponse(content_type="application/ms-excel")
+        response["Content-Disposition"] = (
+            'attachment; filename="dotazniky_objev_set.xls"'
+        )
 
-        wb = xlwt.Workbook(encoding='utf-8')
-        ws = wb.add_sheet('ObjevSet')
+        wb = xlwt.Workbook(encoding="utf-8")
+        ws = wb.add_sheet("ObjevSet")
 
         row_num = 0
         font_style = xlwt.XFStyle()
-        font_style.font.bold=True
+        font_style.font.bold = True
 
         columns = [
-        "id",
-        "name",
-        "surname",
-        "birthday",
-        "hair_color",
-        "skin_color",
-        "color_tone",
-        "colors_to_avoid",
-        "design_preferences",
-        "individual_cut",
-        "knickers_cut",
-        "bra_cut",
-        "activities",
-        "preferred_details",
-        "gdpr_consent",
-        "newsletter_consent",
+            "id",
+            "name",
+            "surname",
+            "birthday",
+            "hair_color",
+            "skin_color",
+            "color_tone",
+            "colors_to_avoid",
+            "design_preferences",
+            "individual_cut",
+            "knickers_cut",
+            "bra_cut",
+            "activities",
+            "preferred_details",
+            "gdpr_consent",
+            "newsletter_consent",
         ]
-
 
         for col_num, column_title in enumerate(columns):
             ws.write(row_num, col_num, column_title, font_style)
@@ -207,40 +222,35 @@ class UniqueSetCreationAdmin(admin.ModelAdmin):
         for obj in queryset:
             row_num += 1
             row = [
-        obj.id,
-        obj.name,
-        obj.surname,
-        obj.birthday,
-        obj.hair_color,
-        obj.skin_color,
-        obj.color_tone,
-        obj.colors_to_avoid,
-        obj.design_preferences,
-        obj.individual_cut,
-        obj.knickers_cut,
-        obj.bra_cut,
-        obj.activities,
-        obj.preferred_details,
-        obj.gdpr_consent,
-        obj.newsletter_consent,
-        ]
+                obj.id,
+                obj.name,
+                obj.surname,
+                obj.birthday,
+                obj.hair_color,
+                obj.skin_color,
+                obj.color_tone,
+                obj.colors_to_avoid,
+                obj.design_preferences,
+                obj.individual_cut,
+                obj.knickers_cut,
+                obj.bra_cut,
+                obj.activities,
+                obj.preferred_details,
+                obj.gdpr_consent,
+                obj.newsletter_consent,
+            ]
             for col_num, cell_value in enumerate(row):
                 ws.write(row_num, col_num, cell_value)
 
-
         wb.save(response)
-        return response 
-    
+        return response
 
     export_to_excel.short_description = "Exportovat do Excelu"
 
     actions = ["export_to_excel"]
 
 
-
 admin.site.register(UniqueSetCreation, UniqueSetCreationAdmin)
-
-
 
 
 from .models import ContactModel
@@ -254,6 +264,7 @@ class ContactModelAdmin(admin.ModelAdmin):
         "message",
     )  # Fields to display in the admin list view
     search_fields = ("name", "email", "message")  # Fields to enable search in the admin
+
 
 @admin.register(MappingSetNaMiru)
 class MappingSetNaMiruAdmin(admin.ModelAdmin):

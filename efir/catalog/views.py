@@ -15,6 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 import mimetypes
 
+from django.core.cache import cache
 from django.db.models import Q
 
 from cart.forms import CartAddProductForm
@@ -29,9 +30,8 @@ from stripepayment.views import *
 
 from .models import (BackgroundPhoto, Category, ContactModel, LeftPhoto,
                      MappingSetNaMiru, Product, ProductSet, RightdPhoto,
-                     UniqueSetCreation)
+                     UniqueSetCreation, AboutPhoto1, AboutPhoto2, AboutPhoto3, AboutPhoto4)
 from .recommendation import *
-from django.core.cache import cache
 
 
 def create_contact(request):
@@ -402,10 +402,24 @@ def reklamace(request):
     return render(request, "catalog/reklamace.html", {"categories": categories})
 
 
+
 def about(request):
     categories = Category.objects.all()
-    return render(request, "catalog/about.html", {"categories": categories})
+    about_photo1 = AboutPhoto1.objects.first()
+    about_photo2 = AboutPhoto2.objects.first()
+    about_photo3 = AboutPhoto3.objects.first()
+    about_photo4 = AboutPhoto4.objects.first()
 
+ 
+    context = {
+        "categories": categories,
+        'about_photo1': about_photo1,
+        'about_photo2': about_photo2,
+        'about_photo3': about_photo3,
+        'about_photo4': about_photo4,
+    }
+
+    return render(request, "catalog/about.html", context)
 
 def ochrana(request):
     categories = Category.objects.all()
@@ -602,7 +616,7 @@ def objednat_na_miru(request):
 def product_feed(request):
     # Sample data (you would replace this with your actual data)
     cache.clear()
-    
+
     products = Product.objects.filter(active=True)
     # products = Product.objects.all()
 
@@ -642,9 +656,11 @@ def product_feed(request):
 def product_feed_fb(request):
     cache.clear()
 
-    rss = ET.Element("rss", {"xmlns:g": "http://base.google.com/ns/1.0", "version": "2.0"})
+    rss = ET.Element(
+        "rss", {"xmlns:g": "http://base.google.com/ns/1.0", "version": "2.0"}
+    )
     channel = ET.SubElement(rss, "channel")
-    
+
     ET.SubElement(channel, "title").text = "Efir The Brand"
     ET.SubElement(channel, "link").text = "https://www.efirthebrand.cz"
     ET.SubElement(channel, "description").text = "Product Feed"
@@ -653,25 +669,31 @@ def product_feed_fb(request):
 
     # Iterate over each product and create corresponding XML elements
     for product in products:
-        first_photo = product.photos.first().photo.url if product.photos.exists() else "None"
-        
+        first_photo = (
+            product.photos.first().photo.url if product.photos.exists() else "None"
+        )
+
         item = ET.SubElement(channel, "item")
-        
-        ET.SubElement(item,"g:id").text = str(product.id)
-        ET.SubElement(item,"g:title").text = str(product.name)
-        ET.SubElement(item,"g:description").text = str(product.long_description)
-        ET.SubElement(item,"g:availability").text = "in stock"
-        ET.SubElement(item,"g:condition").text = "new"
-        ET.SubElement(item,"g:price").text = f"{product.price:.2f} CZK"
-        ET.SubElement(item,"g:link").text = request.build_absolute_uri(product.get_absolute_url())
-        ET.SubElement(item,"g:image_link").text = first_photo
-        ET.SubElement(item,"g:brand").text = "Efir The Brand"
-    
+
+        ET.SubElement(item, "g:id").text = str(product.id)
+        ET.SubElement(item, "g:title").text = str(product.name)
+        ET.SubElement(item, "g:description").text = str(product.long_description)
+        ET.SubElement(item, "g:availability").text = "in stock"
+        ET.SubElement(item, "g:condition").text = "new"
+        ET.SubElement(item, "g:price").text = f"{product.price:.2f} CZK"
+        ET.SubElement(item, "g:link").text = request.build_absolute_uri(
+            product.get_absolute_url()
+        )
+        ET.SubElement(item, "g:image_link").text = first_photo
+        ET.SubElement(item, "g:brand").text = "Efir The Brand"
+
     # Serialize the XML tree to string
-    xml_string = ET.tostring(rss, encoding="utf-8", xml_declaration=True).decode("utf-8")
-    
+    xml_string = ET.tostring(rss, encoding="utf-8", xml_declaration=True).decode(
+        "utf-8"
+    )
+
     logger.info(f"Generated {len(products)} products for the feed")
-    
+
     return HttpResponse(xml_string, content_type="application/xml; charset=utf-8")
 
 
