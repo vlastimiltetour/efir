@@ -406,3 +406,44 @@ class MappingSetNaMiru(models.Model):
     class Meta:
         verbose_name = "Dotazník šití na míru"
         verbose_name_plural = "Dotazníky šití na míru"
+
+
+class AboutPhoto1(models.Model):
+    name = models.CharField(max_length=255)
+    photo = models.ImageField(
+        upload_to="catalog/background",
+        verbose_name="About fotka 1",
+    )
+
+    class Meta:
+        verbose_name = "About fotka 1"
+
+class AboutPhoto2(models.Model):
+    name = models.CharField(max_length=255)
+    photo = models.ImageField(
+        upload_to="catalog/background",
+        verbose_name="About fotka 2",
+    )
+
+    class Meta:
+        verbose_name = "About fotka 2"
+
+class AboutPhoto3(models.Model):
+    name = models.CharField(max_length=255)
+    photo = models.ImageField(
+        upload_to="catalog/background",
+        verbose_name="About fotka 3",
+    )
+
+    class Meta:
+        verbose_name = "About fotka 3"
+
+class AboutPhoto4(models.Model):
+    name = models.CharField(max_length=255)
+    photo = models.ImageField(
+        upload_to="catalog/background",
+        verbose_name="About fotka 4",
+    )
+
+    class Meta:
+        verbose_name = "About fotka 4"
