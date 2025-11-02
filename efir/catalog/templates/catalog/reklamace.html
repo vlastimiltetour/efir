@@ -3,86 +3,78 @@
 {% load i18n %}
 {% block content %}
 <div class="container px-4 px-lg-5 my-5">
-      <!-- Center the heading -->
+  <!-- Center the heading -->
   <div class="text-center">
-      <h1 class="jumbotron-heading mt-5 mb-5">{% trans "Reklamace" %}</h1>
-   </div>
-   <!-- end heading -->
+    <h1 class="jumbotron-heading mt-5 mb-5">{% trans "Reklamace / Výměna / Vrácení" %}</h1>
+  </div>
 
-   <div class="row">
-      <!-- right column-->      
-      <div class="col-md-4 order-md-2 mb-4">
-         <div class="row gx-4 gx-lg-5 align-items-center">
-            <img src="{% static 'assets/img/reklamace_image0.jpeg' %}" class="img-fluid" style="max-width: 100%;">
-         </div>
+  <div class="row">
+    <!-- Right column -->
+    <div class="col-md-4 order-md-2 mb-4">
+      <div class="row gx-4 gx-lg-5 align-items-center">
+        <img src="{% static 'assets/img/reklamace_image0.jpeg' %}" class="img-fluid" style="max-width: 100%;">
       </div>
-      <!-- end right column -->
-      
-      <!-- left column -->
-      <div class="col-md-8 order-md-1">
-         <div class="album bg-white">
-            <div class="container">
-               <p style="text-align: justify;">Vaše spokojenost je pro nás prioritou. Pokud by došlo k jakékoli nepříjemnosti, jsme připraveni vám pomoci ji rychle a snadno vyřešit.</p>
-             
-               <h2>Lhůta pro reklamaci</h2>
-               <ul style="text-align: justify;">
-                   <li>Reklamaci lze uplatnit do <b>14 dnů od převzetí zboží</b>. Doporučujeme reklamaci oznámit co nejdříve po zjištění problému.</li>
-               </ul>
-               
-               <h2>Podmínky reklamace</h2>
-               <ul style="text-align: justify;">
-                   <li>Reklamovat lze pouze <b>nepoužité, nepoškozené výrobky</b>, které jsou v původním stavu. Výrobek musí mít všechny příslušenství a neodstraněné štítky.</li>
-                   <li><strong>Výjimky:</strong></li>
-                   <ul>
-                       <li><b>Podprsenky a podvazkové pásy</b> lze vrátit či vyměnit pouze v neporušeném stavu a pokud nebyly nošeny.</li>
-                       <li><b>Kalhotky</b> nelze z hygienických důvodů vracet ani vyměňovat.</li>
-                   </ul>
-               </ul>
-               
-               <h2>Postup reklamace</h2>
-               <ol style="text-align: justify;">
-                   <li>
-                       <strong>Oznámení reklamace:</strong> Reklamaci je třeba nejprve nahlásit na e-mail 
-                       <b><a href="mailto:objednavky@efirthebrand.cz">objednavky@efirthebrand.cz</a></b>.
-                       <ul>
-                           <li>Do e-mailu uveďte:</li>
-                           <ul>
-                               <li>Číslo objednávky.</li>
-                               <li>Popis zjištěné vady.</li>
-                               <li>Fotografie zboží (pokud je to možné).</li>
-                           </ul>
-                       </ul>
-                   </li>
-                   <li>
-                       <strong>Vyřízení reklamace:</strong> Do <b>2 pracovních dnů</b> vás kontaktujeme s dalšími pokyny.
-                   </li>
-                   <li>
-                       <strong>Možnosti řešení:</strong>
-                       <ul>
-                           <li>Výměna podprsenky nebo podvazkového pásu za správnou velikost (pokud je dostupná).</li>
-                           <li>Pokud není požadovaná velikost k dispozici:</li>
-                           <ul>
-                               <li>Výměna za jiný model nebo barvu ve stejné hodnotě.</li>
-                               <li>Poskytnutí dárkového poukazu na další nákup v hodnotě zboží, které nelze aktuálně vyměnit.</li>
-                           </ul>
-                       </ul>
-                   </li>
-               </ol>
-               
-               <h2>Důležité informace</h2>
-               <ul style="text-align: justify;">
-                   <li>Reklamace bude vyřízena nejpozději do <b>30 dnů</b> od jejího podání, pokud se obě strany nedohodnou jinak.</li>
-                   <li>Zboží zaslané k reklamaci bez předchozího nahlášení na e-mail nebude přijato.</li>
-               </ul>
-               
-               <p style="text-align: justify;">Děkujeme za vaši důvěru a věříme, že najdeme nejlepší možné řešení vaší reklamace.</p>
-            </div>
-         </div>
-         <!-- end left column -->
+    </div>
+
+    <!-- Left column -->
+    <div class="col-md-8 order-md-1">
+      <div class="album bg-white">
+        <div class="container">
+          <p style="text-align: justify;">
+            Vaše spokojenost je pro nás důležitá. Pokud se s objednávkou objeví jakýkoliv problém, společně ho vyřešíme
+            rychle a s respektem.
+          </p>
+
+          <h2>Reklamace (vadné zboží)</h2>
+          <p style="text-align: justify;">
+            Pokud zjistíte vadu materiálu nebo zpracování, můžete zboží reklamovat do <b>30 dnů od nákupu</b>.
+            Reklamovat lze pouze <b>nenošené a neprané zboží</b>.
+          </p>
+          <h3>Postup:</h3>
+          <ol style="text-align: justify;">
+            <li>Napište nám na <a href="mailto:objednavky@efirthebrand.cz">objednavky@efirthebrand.cz</a> – připojte číslo objednávky, popis vady a fotografii (pokud je to možné).</li>
+            <li>Do <b>2 pracovních dnů</b> vás kontaktujeme s dalším postupem.</li>
+            <li>Po posouzení vám nabídneme řešení – opravu, výměnu, slevu nebo vrácení peněz.</li>
+            <li>Reklamace bude vyřízena nejpozději do <b>30 dnů</b> od přijetí.</li>
+          </ol>
+
+          <h2>Výměna zboží</h2>
+          <p style="text-align: justify;">
+            Pokud vám nesedí velikost nebo si přejete jiný typ produktu, nabízíme výměnu za jinou velikost nebo jiný model
+            ve stejné hodnotě. Zboží musí být <b>nepoškozené, nenošené a v původním obalu</b>.
+            Výměnu nelze provést u <b>produktů šitých na míru</b>.
+          </p>
+          <h3>Postup:</h3>
+          <ol style="text-align: justify;">
+            <li>Napište nám na <a href="mailto:objednavky@efirthebrand.cz">objednavky@efirthebrand.cz</a> – uveďte číslo objednávky a jaký produkt si přejete místo původního.</li>
+            <li>Po domluvě odešlete zboží zpět na naši adresu.</li>
+            <li>Po obdržení zásilky odešleme nový produkt nebo – pokud není dostupný – vystavíme dárkový certifikát v hodnotě původního zboží.</li>
+          </ol>
+
+          <h2>Vrácení zboží (odstoupení od smlouvy)</h2>
+          <p style="text-align: justify;">
+            Zboží zakoupené online můžete vrátit do <b>14 dnů od převzetí zásilky</b>, pokud nebyl narušen obal.
+            To znamená, že je <b>neporušená ochranná nálepka</b> a hedvábný papír uvnitř nebyl otevřen.
+            V takovém případě lze vrátit jakýkoliv produkt – podprsenku, kalhotky i podvazkový pás.
+            Vrátit nelze pouze <b>zboží šité na míru</b> podle individuálních požadavků.
+          </p>
+          <h3>Postup:</h3>
+          <ol style="text-align: justify;">
+            <li>Napište nám na e-mail: <a href="mailto:objednavky@efirthebrand.cz">objednavky@efirthebrand.cz</a> – uveďte číslo objednávky a informaci, že si přejete zboží vrátit.</li>
+            <li>Odešlete zboží na adresu:<br><b>EFIR<br>Olšanská 54/3,<br>130 00 Praha 3</b>.</li>
+            <li>Po doručení a kontrole zboží vám do <b>14 dnů</b> vrátíme částku zpět na účet (bez poštovného).</li>
+          </ol>
+
+          <p style="text-align: justify;">
+            Každý kousek EFIR vzniká s péčí a úmyslem, aby vám dlouho dělal radost. Pokud se přesto objeví problém,
+            vyřešíme ho férově a s ohledem na vás.
+          </p>
+        </div>
       </div>
-   </div>
+    </div>
+  </div>
 </div>
-<!-- end page -->
+
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
