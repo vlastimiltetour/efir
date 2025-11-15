@@ -64,6 +64,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "category",
+        "short_description",
         "price",
         "get_available_sizes_display",
         "active",
