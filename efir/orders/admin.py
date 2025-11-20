@@ -53,6 +53,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = [
         "etb_id",
         "products",
+        "short_description",
         "total_cost",
         "paid",
         "shipped",
@@ -83,7 +84,6 @@ class OrderAdmin(admin.ModelAdmin):
         else:
             url = reverse("stripepayment:manually_create_PPL", args=[obj.id])
             return mark_safe(f'<a href="{url}">Vytvořit etiketu</a>')
-
 
     download_label.short_description = "PDF Label"
 
@@ -127,8 +127,16 @@ class OrderAdmin(admin.ModelAdmin):
         return str(value)
 
     def products(self, obj):
-        product_names = [item.product.name for item in obj.items.all()]
+        product_names = [
+            item.product.name
+            for item in obj.items.all()
+        ]
+        
         return product_names
+
+    def short_description(self, obj):
+        product_desc = [item.product.short_description for item in obj.items.all()]
+        return product_desc
 
     velikosti.short_description = "Položky v objednávce"
 
@@ -214,7 +222,6 @@ class OrderAdmin(admin.ModelAdmin):
 """
 
     def export_to_csv(self, request, queryset):
-
         def fix_order_date(dt_str):
             try:
                 dt_str = str(dt_str)
@@ -223,7 +230,7 @@ class OrderAdmin(admin.ModelAdmin):
                 return None
 
             return dt_obj.replace(microsecond=0, tzinfo=None).isoformat()
-            
+
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = 'attachment; filename="orders.csv"'
 
