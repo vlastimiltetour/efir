@@ -238,7 +238,7 @@ def generate_vouchers(request):
             id=0,
             orderitem_id=0,
             category="Sleva na první nákup",
-            discount_value=300,
+            discount_value=10,
             discount_type="Částka",
             discount_threshold=1,
             certificate_from="-",
@@ -246,7 +246,7 @@ def generate_vouchers(request):
         )
         created_coupons.append(coupon_create)
 
-    ''' for i in range(500):
+    """ for i in range(500):
         coupon_create(
             request,
             id=0,
@@ -283,7 +283,7 @@ def generate_vouchers(request):
             discount_threshold=1,
             certificate_from="-",
             certificate_to="-",
-        )'''
+        )"""
 
     return HttpResponse(f"Vouchers have been created, total{len(created_coupons)}")
 
@@ -424,13 +424,13 @@ def generate_vouchers_2(request):
 
 from django.db.models import Count
 
+
 def check_for_duplicate_coupons(request):
     # Query to find duplicate codes
     duplicates = (
-        Coupon.objects
-        .values('code')                  # Group by the 'code' field
-        .annotate(code_count=Count('code'))  # Count occurrences of each 'code'
-        .filter(code_count__gt=1)        # Filter groups where the count is greater than 1
+        Coupon.objects.values("code")  # Group by the 'code' field
+        .annotate(code_count=Count("code"))  # Count occurrences of each 'code'
+        .filter(code_count__gt=1)  # Filter groups where the count is greater than 1
     )
 
     # Check if any duplicates were found
@@ -438,5 +438,3 @@ def check_for_duplicate_coupons(request):
         return HttpResponse(f"Duplicate coupon codes found: {list(duplicates)}")
     else:
         return HttpResponse("No duplicate coupon codes found.")
-
-
