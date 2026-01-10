@@ -237,10 +237,10 @@ def generate_vouchers(request):
             request,
             id=0,
             orderitem_id=0,
-            category="Sleva na první nákup",
-            discount_value=10,
+            category="Odměna 30 dní po 1. nákupu",
+            discount_value=12,
             discount_type="Procento",
-            discount_threshold=1,
+            discount_threshold=500,
             certificate_from="-",
             certificate_to="-",
         )
