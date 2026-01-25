@@ -94,20 +94,25 @@
   
         <div class="col-md-4 mb-4">
           <a href="{{ novinka.get_absolute_url }}">
-          <div class="card mb-2 box-shadow">
-            
-            <img class="card-img-top img-fluid" 
-            src="{{ novinka.photos.first.photo.url }}" 
-            alt="{{ novinka.name }}">
-            <div class="discount-circle" style="font-size: 80%;"> NEW </div>
-           
-     
-            <div class="card-body d-flex flex-column" style="padding: 1rem;">
-             <h5 class="fw-bolder">{{ novinka.name }}</h5>
-   <p class="card-text">{{ novinka.short_description }}</p>                
-             <b class="fw-semibold">  {{ novinka.price }} Kč</b>
-            </div>
-          </div>
+            <div class="product-image-container">
+              <div class="card mb-2 box-shadow">
+                
+                <img class="card-img-top img-fluid img-default" 
+                src="{{ novinka.photos.first.photo.url }}" 
+                alt="{{ novinka.name }}">
+                  <img class="card-img-top img-fluid img-hover" 
+                src="{{ novinka.photos.all.1.photo.url }}" 
+                alt="{{ novinka.name }}">
+                <div class="discount-circle" style="font-size: 80%;"> NEW </div>
+              
+        
+                <div class="card-body d-flex flex-column" style="padding: 1rem;">
+                <h5 class="fw-bolder">{{ novinka.name }}</h5>
+      <p class="card-text">{{ novinka.short_description }}</p>                
+                <b class="fw-semibold">  {{ novinka.price }} Kč</b>
+                </div>
+              </div>
+              </div>
           </a>
         </div>
         {% endfor %}
@@ -139,29 +144,34 @@
 
       <div class="col-md-4 mb-4">
         <a href="{{ bestseller.get_absolute_url }}">
-        <div class="card mb-2 box-shadow">
-          
-          <img class="card-img-top img-fluid" 
-          src="{{ bestseller.photos.first.photo.url }}" 
-          alt="{{ bestseller.name }}">
-          <div class="discount-circle"> BESTSELLER </div>
-          {% if bestseller.discount %}
-          <div class="discount-circle"> - {{ bestseller.discount }} % </div>
-          {% elif bestseller.new %}
-          <div class="discount-circle"> NEW </div>
-          {% elif bestseller.limited %}
-          <div class="discount-circle"> LIMITOVANÁ EDICE </div>
-          {% elif product.skladem_na_miru %}
-          <div class="discount-circle"> SKLADEM<br>I&nbsp;NA MíRU </div>
-          {% endif %}
-   
-          <div class="card-body d-flex flex-column" style="padding: 1rem;">
-           <h5 class="fw-bolder">{{ bestseller.name }}</h5>
- <p class="card-text">{{ bestseller.short_description }}</p>                
-           <b class="fw-semibold">  {{ bestseller.price }} Kč</b>
-          </div>
+          <div class="product-image-container">
+            <div class="card mb-2 box-shadow">
+              
+              <img class="card-img-top img-fluid img-default" 
+              src="{{ bestseller.photos.first.photo.url }}" 
+              alt="{{ bestseller.name }}">
+                <img class="card-img-top img-fluid img-hover" 
+              src="{{ bestseller.photos.all.1.photo.url }}" 
+              alt="{{ bestseller.name }}">
+              <div class="discount-circle"> BESTSELLER </div>
+              {% if bestseller.discount %}
+              <div class="discount-circle"> - {{ bestseller.discount }} % </div>
+              {% elif bestseller.new %}
+              <div class="discount-circle"> NEW </div>
+              {% elif bestseller.limited %}
+              <div class="discount-circle"> LIMITOVANÁ EDICE </div>
+              {% elif product.skladem_na_miru %}
+              <div class="discount-circle"> SKLADEM<br>I&nbsp;NA MíRU </div>
+              {% endif %}
+      
+              <div class="card-body d-flex flex-column" style="padding: 1rem;">
+              <h5 class="fw-bolder">{{ bestseller.name }}</h5>
+    <p class="card-text">{{ bestseller.short_description }}</p>                
+              <b class="fw-semibold">  {{ bestseller.price }} Kč</b>
+              </div>
         </div>
         </a>
+        </div>
       </div>
       {% endfor %}
       
@@ -185,52 +195,57 @@
 
         <div class="col-md-4 mb-4">
           <a href="{{ product.get_absolute_url }}">
-            <div class="product-image-container">
+                  <div class="product-image-container">
 
-          <div class="card mb-2 box-shadow">
-             {% with first_photo=product.photos.first %}
-               {% if first_photo %}             
-            <img class="card-img-top img-fluid" 
-            data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
-            alt="Thumbnail [100%x225]"
-            src="{{ first_photo.photo.url }}"
-            data-holder-rendered="true">
-            {% endif %}
-            {% if product.certificate.photo %}
-            <img src="{{ product.certificate.photo.url }}" alt="{{ product.name }} certificate">
-           
-            {% endif %}
+                <div class="card mb-2 box-shadow">
+                  {% with first_photo=product.photos.first %}
+                    {% if first_photo %}             
+                  <img class="card-img-top img-fluid img-default" 
+                  data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
+                  alt="Thumbnail [100%x225]"
+                  src="{{ first_photo.photo.url }}"
+                  data-holder-rendered="true">
+                   <img class="card-img-top img-fluid img-hover" 
+                  data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
+                  alt="Thumbnail [100%x225]"
+                  src="{{ product.photos.all.1.photo.url }}"
+                  data-holder-rendered="true">
+                  {% endif %}
+                  {% if product.certificate.photo %}
+                  <img src="{{ product.certificate.photo.url }}" alt="{{ product.name }} certificate">
+                
+                  {% endif %}
 
-            <!-- start na miru -->
-          
-            <!-- end na miru -->
-            {% if product.discount %}
-            <div class="discount-circle"> - {{ product.discount }} % </div>
-            {% elif product.new %}
-            <div class="discount-circle"> NEW </div>
-            {% elif product.limited %}
-            <div class="discount-circle" style="font-size: 50%;"> LIMITOVANÁ EDICE </div>
-            {% endif %}
-            {% if product.skladem_na_miru %}
-            <div class="discount-circle"> SKLADEM<br>I&nbsp;NA MíRU </div>
-            {% endif %}
+                  <!-- start na miru -->
+                
+                  <!-- end na miru -->
+                  {% if product.discount %}
+                  <div class="discount-circle"> - {{ product.discount }} % </div>
+                  {% elif product.new %}
+                  <div class="discount-circle"> NEW </div>
+                  {% elif product.limited %}
+                  <div class="discount-circle" style="font-size: 50%;"> LIMITOVANÁ EDICE </div>
+                  {% endif %}
+                  {% if product.skladem_na_miru %}
+                  <div class="discount-circle"> SKLADEM<br>I&nbsp;NA MíRU </div>
+                  {% endif %}
 
 
-          </div>
-            {% endwith %}
-            <div class="card-body d-flex flex-column" style="padding: 1rem;">
-              <h5 class="fw-bolder"> {{ product.name }}</h5>
-              <p class="card-text">{{ product.short_description }}</p>     
+                </div>
+                  {% endwith %}
+                  <div class="card-body d-flex flex-column" style="padding: 1rem;">
+                    <h5 class="fw-bolder"> {{ product.name }}</h5>
+                    <p class="card-text">{{ product.short_description }}</p>     
 
-              {% if product.discount %}
-              <div><b class="fw-semibold"><del>{{ product.price }} Kč</del></div>
-                <div>{{ product.corrected_price }} Kč</div></b>
-              {% else %}
-              <b class="fw-semibold">{{ product.price }} Kč</b>
-              {% endif %}
+                    {% if product.discount %}
+                    <div><b class="fw-semibold"><del>{{ product.price }} Kč</del></div>
+                      <div>{{ product.corrected_price }} Kč</div></b>
+                    {% else %}
+                    <b class="fw-semibold">{{ product.price }} Kč</b>
+                    {% endif %}
 
-            </div>
-          </div>
+                  </div>
+                </div>
           </a>
         </div>
         {% endfor %}

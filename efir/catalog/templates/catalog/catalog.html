@@ -190,46 +190,52 @@
 
         
         {% for product in products %} 
-
+        
         <!-- Single Product -->
         <div class="col-md-4 mb-4">
           <a href="{{ product.get_absolute_url }}">
             <div class="product-image-container">
 
 
-          <div class="card mb-2 box-shadow">
-            {% with first_photo=product.photos.first %}
-            {% if first_photo %}
-            <img class="card-img-top img-fluid" 
-            data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
-            alt="Thumbnail [100%x225]"
-            src="{{ first_photo.photo.url }}"
-            data-holder-rendered="true">
-            {% endif %}
+              <div class="card mb-2 box-shadow">
+                {% with first_photo=product.photos.first %}
+                
+                {% if first_photo %}
+                <img class="card-img-top img-fluid img-default" 
+                data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
+                alt="Thumbnail [100%x225]"
+                src="{{ first_photo.photo.url }}"
+                data-holder-rendered="true">
+                <img class="card-img-top img-fluid img-hover" 
+                data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
+                alt="Thumbnail [100%x225]"
+                src="{{ product.photos.all.1.photo.url }}"
+                data-holder-rendered="true">
+                {% endif %}
 
 
-            {% if product.certificate.photo %}
-            <img class="card-img-top img-fluid" 
-            data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
-            alt="{{ product.name }} certificate"
-            src="{{ product.certificate.photo.url }}"
-            data-holder-rendered="true">
-           
-            {% endif %}
+                {% if product.certificate.photo %}
+                <img class="card-img-top img-fluid" 
+                data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
+                alt="{{ product.name }} certificate"
+                src="{{ product.certificate.photo.url }}"
+                data-holder-rendered="true">
+              
+                {% endif %}
 
 
 
-            {% if product.discount %}
-            <div class="discount-circle" style="background-color: #990000; font-size: 15px;"> -{{ product.discount }} % </div>
+                {% if product.discount %}
+                <div class="discount-circle" style="background-color: #990000; font-size: 15px;"> -{{ product.discount }} % </div>
 
-            {% elif product.new %}
-            <div class="discount-circle"> NEW </div>
-            {% elif product.limited %}
-            <div class="discount-circle"> LIMITOVANÁ EDICE </div>
-            {% elif product.skladem_na_miru %}
-            <div class="discount-circle">SKLADEM<br>I&nbsp;NA MíRU </div>
-            {% endif %}
-          </div>
+                {% elif product.new %}
+                <div class="discount-circle"> NEW </div>
+                {% elif product.limited %}
+                <div class="discount-circle"> LIMITOVANÁ EDICE </div>
+                {% elif product.skladem_na_miru %}
+                <div class="discount-circle">SKLADEM<br>I&nbsp;NA MíRU </div>
+                {% endif %}
+              </div>
             {% endwith %}
             <div class="card-body d-flex flex-column" style="padding: 1rem;">
               <h5 class="fw-bolder"> {{ product.name }}</h5>
