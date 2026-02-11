@@ -74,6 +74,7 @@ class OrderAdmin(admin.ModelAdmin):
         "download_label",
     ]
 
+    readonly_fields = ["confirmation_sent", "paid_confirmation_sent", "shipped_sent"]
     inlines = [OrderItemInline]
 
     def download_label(self, obj):
@@ -127,11 +128,8 @@ class OrderAdmin(admin.ModelAdmin):
         return str(value)
 
     def products(self, obj):
-        product_names = [
-            item.product.name
-            for item in obj.items.all()
-        ]
-        
+        product_names = [item.product.name for item in obj.items.all()]
+
         return product_names
 
     def short_description(self, obj):
@@ -139,21 +137,6 @@ class OrderAdmin(admin.ModelAdmin):
         return product_desc
 
     velikosti.short_description = "Položky v objednávce"
-
-    def get_readonly_fields(self, request, obj=None):
-        # Make all fields readonly except for "shipped"
-        if obj:
-            return [
-                field.name
-                for field in self.model._meta.fields
-                if (
-                    field.name != "shipped"
-                    and field.name != "paid"
-                    and field.name != "author_comment"
-                )
-            ]
-        else:
-            return []
 
     def has_add_permission(self, request, obj=None):
         return True

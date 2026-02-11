@@ -8,11 +8,8 @@ from smtplib import (SMTPDataError, SMTPException, SMTPRecipientsRefused,
 import weasyprint
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
-from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from requests.exceptions import SSLError
-
-
 
 from .models import Order
 
@@ -30,21 +27,21 @@ logger = logging.getLogger(__name__)
 def customer_order_email_confirmation(order_id: int) -> bool:
     try:
         order = Order.objects.get(id=order_id)
-        print("IN EMAIL HELPER → paid =", order.paid)
+        print("IN EMAIL HELPER → paid =", order.paid)  # TODO vlk test this
     except Order.DoesNotExist:
-        logger.error('Order with this ID does not exist', order_id)
+        logger.error("Order with this ID does not exist", order_id)
         return False
-    
+
     if order.paid_confirmation_sent:
-        logger.info('Order confirmation has been already sent')
-        return False 
+        logger.info("Order confirmation has been already sent")
+        return False
 
     pdf_out = BytesIO()
     html_content = render_to_string(
-            "orders/customer_email_confirmation.html", {"order": order}
-        )
-    
-    try: 
+        "orders/customer_email_confirmation.html", {"order": order}
+    )
+
+    try:
         pdf_content = render_to_string("orders/invoice_pdf.html", {"order": order})
         stylesheet_url = (
             "https://etb.fra1.cdn.digitaloceanspaces.com/etb/css/styles.css"
@@ -57,14 +54,11 @@ def customer_order_email_confirmation(order_id: int) -> bool:
             logger.error("Failed to fetch stylesheet: %s", e)
             stylesheets = []  # Proceed without stylesheets if fetching fails
 
-        weasyprint.HTML(string=pdf_content).write_pdf(
-                pdf_out, stylesheets=stylesheets
-            ) 
-      
-    except Exception as e:
-        logger.error('Failed to generate a PDF for order ID %s: %s', order_id, e)
-        pdf_out = None
+        weasyprint.HTML(string=pdf_content).write_pdf(pdf_out, stylesheets=stylesheets)
 
+    except Exception as e:
+        logger.error("Failed to generate a PDF for order ID %s: %s", order_id, e)
+        pdf_out = None
 
     msg = EmailMultiAlternatives(
         subject=f"Vaše objednávka #{order.etb_id} je potvrzena [ZAPLACENO].",
@@ -75,7 +69,9 @@ def customer_order_email_confirmation(order_id: int) -> bool:
     msg.attach_alternative(html_content, "text/html")
 
     if pdf_out:
-        msg.attach(f"Objednavka {order.etb_id}.pdf", pdf_out.getvalue(), "application/pdf")
+        msg.attach(
+            f"Objednavka {order.etb_id}.pdf", pdf_out.getvalue(), "application/pdf"
+        )
 
     try:
         msg.send()
@@ -83,9 +79,10 @@ def customer_order_email_confirmation(order_id: int) -> bool:
             "Customer order confirmation email sent successfully for order ID %s",
             order_id,
         )
-        order.paid_confirmation_sent = True
-        order.paid = True
-        order.save(update_fields=["paid_confirmation_sent", "paid"])
+        Order.objects.filter(id=order_id).update(
+            paid_confirmation_sent=True,
+            paid=True
+        )
 
 
     except (ssl.SSLCertVerificationError, SSLError) as e:
@@ -119,10 +116,10 @@ from .models import Order
 def unpaid_customer_order_email_confirmation(order_id):
     try:
         order = Order.objects.get(id=order_id)
-    
-    except Order.DoesNotExist as e:
+
+    except Order.DoesNotExist:
         logger.warning(f"Order with ID {order_id} not found. Skipping email.")
-        return 
+        return
 
     html_content = render_to_string(
         "orders/unpaid_customer_email_confirmation.html", {"order": order}
@@ -134,7 +131,32 @@ def unpaid_customer_order_email_confirmation(order_id):
         bcc=["objednavky@efirthebrand.cz"],
     )
     msg.attach_alternative(html_content, "text/html")
-    return msg.send()
+
+    try:
+        msg.send()
+        order.confirmation_sent = True
+        order.created = True  # TODO vlk test this
+        order.save(update_fields=["confirmation_sent", "created"])  # TODO vlk test this
+    except (ssl.SSLCertVerificationError, SSLError) as e:
+        logger.error("Failed to send email due to SSL error: %s", e)
+
+    except (
+        SMTPDataError,
+        SMTPException,
+        SMTPRecipientsRefused,
+        SMTPSenderRefused,
+    ) as e:
+        logger.error("Failed to send email: %s", e)
+        return False
+
+    except Exception as e:
+        logger.error("An unexpected error occurred: %s", e)
+        logger.info(
+            "Attempting to send customer order confirmation email for order ID without PDF %s",
+            order_id,
+        )
+
+        return False
 
 
 def certificate_order_email_confirmation(order_id):

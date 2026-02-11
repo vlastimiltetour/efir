@@ -72,6 +72,9 @@ class Order(models.Model):
     zasilkovna_id = models.CharField(
         max_length=250, blank=True, verbose_name="Zásilkovna ID"
     )
+    order_created = models.BooleanField(
+        default=True, verbose_name="Objednávka vytvořena (nezaplaceno)"
+    )
     paid = models.BooleanField(default=False, verbose_name="Zaplaceno")
     shipped = models.BooleanField(default=False, verbose_name="Vyřízeno")
     newsletter_consent = models.BooleanField(
@@ -91,13 +94,13 @@ class Order(models.Model):
     )  # Or use FilePathField if you want to restrict to a certain directory
 
     confirmation_sent = models.BooleanField(
-        default=False, verbose_name="Nezaplaceno - potvrzení objednávky"
+        default=False, verbose_name="Email: Nezaplaceno - potvrzení objednávky odesláno"
     )
     shipped_sent = models.BooleanField(
-        default=False, verbose_name="Email - předáno k dopravci"
+        default=False, verbose_name="Email Odesláno - předáno k dopravci"
     )
     paid_confirmation_sent = models.BooleanField(
-        default=False, verbose_name="Zaplaceno -  potvrzení objednávky"
+        default=False, verbose_name="Email: Zaplaceno -  potvrzení objednávky odesláno"
     )
 
     class Meta:
