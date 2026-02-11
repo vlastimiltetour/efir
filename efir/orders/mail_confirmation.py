@@ -135,9 +135,9 @@ def unpaid_customer_order_email_confirmation(order_id):
     try:
         msg.send()
         logger.info('the order has been created, but unpaid, order_id', order_id)
-        Order.objects.filter(id=order_id).update(
+        '''Order.objects.filter(id=order_id).update(
             confirmation_sent=True
-        )
+        )'''
     except (ssl.SSLCertVerificationError, SSLError) as e:
         logger.error("Failed to send email due to SSL error: %s", e)
 
