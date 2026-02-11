@@ -27,8 +27,6 @@ def send_email_when_order_created(sender, instance, **kwargs):
         except Exception as e:
             logger.error(f"There has been an error while triggering signal and sending an confirmatory email in order {instance.id}, error: {e}")
     
-
-
 @receiver(post_save, sender=Order)
 def send_email_when_order_completed(sender, instance, created, **kwargs):
     # Check if the order is marked as shipped and the shipped email hasn't been sent
