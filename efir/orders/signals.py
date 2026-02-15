@@ -1,5 +1,6 @@
 import logging
 
+from django.db import transaction # Add this import
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -12,18 +13,22 @@ logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=Order)
-def send_email_when_order_created(sender, instance, **kwargs):
-    # Check if the order is marked as shipped and the shipped email hasn't been sent
-    if instance.created and not instance.confirmation_sent:
+def send_email_when_order_created(sender, instance, created, **kwargs):
+    # created is being provided by the signal and is True only when it's created
+    if created and not instance.confirmation_sent:
         logger.info(f"======= Order {instance.id} has been created.")
         try:
-            unpaid_customer_order_email_confirmation(instance.id)
+            # This ensures products are actually in the DB before we try to render the email - fix for the confirmation email without product details 
+            # It waits until the database says "Everything is saved!"
+            transaction.on_commit(
+                lambda: unpaid_customer_order_email_confirmation(instance.id)
+            )
             logger.info(
                 f"======= Order {instance.id} has been created and email confirmation has been sent."
             )
 
             # Update the 'shipped_sent' field without triggering the signal again
-            Order.objects.filter(pk=instance.pk).update(confirmation_sent=True)
+            
         except Exception as e:
             logger.error(f"There has been an error while triggering signal and sending an confirmatory email in order {instance.id}, error: {e}")
     

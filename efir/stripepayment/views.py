@@ -46,6 +46,7 @@ def payment_process(request):
     # order_id = 4
 
     order = get_object_or_404(Order, id=order_id)
+    #TODO here I can put the email notification
 
     payment_attempts = request.session.get("payment_attempts", 0)
 
@@ -255,6 +256,16 @@ def payment_completed(request):
     )
 
     try:
+        coupon_id = request.session.get("coupon_id")
+    except Exception:
+        print("there is an exception", Exception)
+
+    try:
+        Coupon.objects.get(id=coupon_id).delete()
+    except Coupon.DoesNotExist:
+        pass
+
+    try:
         if certificate is True:
             try:
                 certificate_order_email_confirmation(order_id)
@@ -294,7 +305,7 @@ def payment_completed(request):
     if order.shipping == "Z":
         zasilkovna_create_package(order_id)
         print("Zasilkovna package has been created")
-    elif order.shipping == ("P" or "D"):
+    elif order.shipping in ["P", "D"]:
         ppl_create_label_view(request, order_id)
         print("PPL package has been created")
     elif order.shipping == "O":
@@ -306,28 +317,23 @@ def payment_completed(request):
 
 
 def payment_canceled(request):
+    order_id = request.session.get("order_id")
+    logger.info(f"This is log for payment canceled, order id: {order_id}")
     for key, value in request.session.items():
         if isinstance(value, Decimal):
             value = str(value)
         print(f"Key: {key}, Value: {value}, type{type(value)}")
-    try:
-        coupon_id = request.session.get("coupon_id")
-    except Exception:
-        print("there is an exception", Exception)
-
-    order_id = request.session.get("order_id")
-    print("oh year this is order_id", order_id)
-
+   
     cart = Cart(request)
 
-    try:
-        time.sleep(5)
+    '''try:
+        time.sleep(2)
         if order_id:
             unpaid_customer_order_email_confirmation(order_id)
 
             logging.info(
-                        f"customer email byl odeslan ale neni zaplaceno. Local environment, no email sending service. Order ID: {order_id}"
-                    )
+                f"customer email byl odeslan ale neni zaplaceno. Local environment, no email sending service. Order ID: {order_id}"
+            )
 
     except ssl.SSLCertVerificationError:
         logging.info(
@@ -336,17 +342,12 @@ def payment_canceled(request):
     except smtplib.SMTPSenderRefused as e:
         logging.error(
             f"customer email byl odeslan ale neni zaplaceno. SMTP Sender Refused Error: {e}. Check SMTP policies. Order ID: {order_id}"
-        )
-
-    try:
-        Coupon.objects.get(id=coupon_id).delete()
-    except Coupon.DoesNotExist:
-        pass
+        )'''
 
     if cart.shipping == "Z":
         # zasilkovna_create_package(order_id)
         print("payment canceled Zasilkovna package has not been created")
-    elif cart.shipping == "P" or "D":
+    elif cart.shipping in ["P", "D"]:
         # ppl_create_label_view(request, order_id)
         print("Payment canceled PPL package has not been created")
     elif cart.shipping == "O":
@@ -526,6 +527,7 @@ def manual_payment_completed(request, order_id, vendor_type):
 
 
 from django.shortcuts import redirect
+
 
 def manually_create_PPL(request, order_id):
     ppl_create_label_view(request, order_id)

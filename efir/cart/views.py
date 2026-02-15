@@ -1,6 +1,7 @@
 import logging
 from decimal import Decimal
 
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
@@ -27,7 +28,7 @@ from django.http import HttpResponseBadRequest
 
 
 @require_POST
-def cart_add(request, product_id):     
+def cart_add(request, product_id):
     inventory_capacity = False
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
@@ -35,7 +36,7 @@ def cart_add(request, product_id):
     inventory = Inventory.objects.filter(product=product).first()
     Certificate.objects.filter(product=product).first()
 
-    if product.active == False:
+    if product.active is False:
         return redirect("catalog:product_detail", id=product_id, slug=product.slug)
 
     if product.discount is not None and product.discount > 0:
@@ -46,7 +47,6 @@ def cart_add(request, product_id):
             )
         except Exception as e:
             logging.info(f"There was an error while deleting a certificate, {e}")
-
 
     if form.is_valid():
         form.set_cart_values()
@@ -112,7 +112,8 @@ def update_cart_quantity(request, item_id):
     cart.update_quantity(item_id, new_quantity)
     return redirect("cart:cart_detail")
 
-
+# Atomicity: By using @transaction.atomic, Django groups the Order creation and all OrderItem creations into one single "all or nothing" database command
+@transaction.atomic
 def cart_detail(request, zasilkovna=True):
     certificate = 0
     try:
