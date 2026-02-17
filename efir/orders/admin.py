@@ -74,7 +74,49 @@ class OrderAdmin(admin.ModelAdmin):
         "download_label",
     ]
 
-    readonly_fields = ["confirmation_sent", "paid_confirmation_sent", "shipped_sent"]
+    fieldsets = (
+        ('Order Identification', {
+            
+            'fields': ('etb_id', 'author_comment', 'confirmation_sent', 'paid_confirmation_sent', 'shipped_sent','created', 'updated'),
+            'description': 'Internal tracking and timestamps.'
+        }),
+        ('Customer Information', {
+            'fields': (
+                ('first_name', 'last_name'),
+                ('email', 'number'),
+                'birthday',
+                'newsletter_consent',
+                'comments',
+            )
+        }),
+        ('Shipping Details', {
+            'fields': (
+                'shipping',
+                'vendor_id',
+                'address',
+                ('city', 'zipcode', 'country'),
+                ('zasilkovna_id', 'label'),
+            )
+        }),
+        ('Payment & Totals', {
+            'fields': (
+                ('total_cost', 'shipping_price'),
+                ('discount', 'discount_code', 'coupon_id'),
+                'stripe_id',
+            )
+        }),
+        ('Order Status & Communication', {
+            'classes': ('wide',),
+            'fields': (
+                ('order_created', 'paid', 'shipped'),
+            
+            )
+        }),
+    )
+    
+    
+
+    readonly_fields = ["confirmation_sent", "paid_confirmation_sent", "shipped_sent", "created", "updated"]
     inlines = [OrderItemInline]
 
     def download_label(self, obj):
