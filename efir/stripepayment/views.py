@@ -46,7 +46,7 @@ def payment_process(request):
     # order_id = 4
 
     order = get_object_or_404(Order, id=order_id)
-    #TODO here I can put the email notification
+    # TODO here I can put the email notification
 
     payment_attempts = request.session.get("payment_attempts", 0)
 
@@ -323,10 +323,10 @@ def payment_canceled(request):
         if isinstance(value, Decimal):
             value = str(value)
         print(f"Key: {key}, Value: {value}, type{type(value)}")
-   
+
     cart = Cart(request)
 
-    '''try:
+    """try:
         time.sleep(2)
         if order_id:
             unpaid_customer_order_email_confirmation(order_id)
@@ -342,7 +342,7 @@ def payment_canceled(request):
     except smtplib.SMTPSenderRefused as e:
         logging.error(
             f"customer email byl odeslan ale neni zaplaceno. SMTP Sender Refused Error: {e}. Check SMTP policies. Order ID: {order_id}"
-        )'''
+        )"""
 
     if cart.shipping == "Z":
         # zasilkovna_create_package(order_id)
@@ -427,16 +427,39 @@ def ppl_create_label_view(request, order_id):
         return JsonResponse({"error": "An unexpected error occurred"}, status=500)
 
 
+def get_product_type(order):
+    order_country = order.country.upper()
+    shipping_type = order.shipping.upper()
+
+    PRODUCT_TYPE_MAP = {
+        "COUNTRY": {
+            "CZ": {"P": "SMAR", "D": "PRIV"},  # TODO not BUSS
+            "INTERNATIONAL": {
+                "P": "CONN",
+                "D": "CONN",  # ??? Tohle je pouze business  #TODO opravit COPL vypada jako business
+            },
+        }
+    }
+
+    region = order_country if order_country == "CZ" else "INTERNATIONAL"
+    code = PRODUCT_TYPE_MAP["COUNTRY"][region].get(shipping_type, "BUSS")
+
+    return code
+
+
 def ppl_create_shipment_payload(request, order_id):
     # order_id = 289
     order = get_object_or_404(Order, id=order_id)
 
     print("this is order country", order.country, type(order.country))
+
+    '''#if shipping_type == "P"
     if order.country == "CZ":
         product_type = "BUSS"
     else:
         product_type = "CONN"
-
+    #elif shipping_type == "D"'''
+    product_type = get_product_type(order)
     print("this is product type", product_type)
 
     payload = {
