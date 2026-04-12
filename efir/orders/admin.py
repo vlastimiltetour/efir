@@ -7,7 +7,13 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from .models import Order, OrderItem
+from .mail_confirmation import certificate_order_email_confirmation  
 
+
+@admin.action(description="📧 Poslat certifikát emailem")
+def send_certificate_email(modeladmin, request, queryset):
+    for order in queryset:
+        certificate_order_email_confirmation(order.id)
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
@@ -46,6 +52,8 @@ class OrderItemInline(admin.TabularInline):
 
     def has_delete_permission(self, request, obj=None):
         return True
+    
+    
 
 
 @admin.register(Order)
@@ -90,7 +98,7 @@ class OrderAdmin(admin.ModelAdmin):
                 "description": "Internal tracking and timestamps.",
             },
         ),
-        ( 
+        (
             "Order Status & Communication",
             {"classes": ("wide",), "fields": (("order_created", "paid", "shipped"),)},
         ),
@@ -138,6 +146,12 @@ class OrderAdmin(admin.ModelAdmin):
         "updated",
     ]
     inlines = [OrderItemInline]
+
+
+    def send_manual_confirmation(self, obj):
+        pass
+
+    send_manual_confirmation.short_description = "Send Manual Confirmation"
 
     def download_label(self, obj):
         if obj.label:
@@ -338,4 +352,6 @@ class OrderAdmin(admin.ModelAdmin):
 
     export_to_csv.short_description = "Exportovat do CSV"
 
-    actions = ["export_to_csv"]
+    actions = ["export_to_csv", send_certificate_email]
+
+
