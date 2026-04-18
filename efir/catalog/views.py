@@ -28,9 +28,10 @@ from orders.mail_confirmation import *
 from orders.mail_confirmation import customer_order_email_confirmation
 from stripepayment.views import *
 
-from .models import (BackgroundPhoto, Category, ContactModel, LeftPhoto,
+from .models import (AboutPhoto1, AboutPhoto2, AboutPhoto3, AboutPhoto4,
+                     BackgroundPhoto, Category, ContactModel, LeftPhoto,
                      MappingSetNaMiru, Product, ProductSet, RightdPhoto,
-                     UniqueSetCreation, AboutPhoto1, AboutPhoto2, AboutPhoto3, AboutPhoto4)
+                     UniqueSetCreation)
 from .recommendation import *
 
 
@@ -151,6 +152,7 @@ def catalog_product_list(request, category_slug=None):
         Product.objects.all()
         .exclude(category__name="Dárkové certifikáty")
         .order_by("created")
+        .filter(discount__isnull=True)
     )
     inventory = Inventory.objects.values("size").distinct().order_by("size")
 
@@ -239,9 +241,11 @@ def catalog_product_list(request, category_slug=None):
             .exclude(category__name="Dárkové certifikáty")
             .order_by(sort_by_price_session)
             .filter(active=True)
+            .filter(discount__isnull=True)
         )
 
     sum_of = len(products)
+    print('sum of', sum_of)
 
     selected_sizes = clean_session_names(size_selection_session)
     selected_zpubob_vyroby = clean_session_names(zpusob_vyroby_session)
@@ -402,7 +406,6 @@ def reklamace(request):
     return render(request, "catalog/reklamace.html", {"categories": categories})
 
 
-
 def about(request):
     categories = Category.objects.all()
     about_photo1 = AboutPhoto1.objects.first()
@@ -410,16 +413,16 @@ def about(request):
     about_photo3 = AboutPhoto3.objects.first()
     about_photo4 = AboutPhoto4.objects.first()
 
- 
     context = {
         "categories": categories,
-        'about_photo1': about_photo1,
-        'about_photo2': about_photo2,
-        'about_photo3': about_photo3,
-        'about_photo4': about_photo4,
+        "about_photo1": about_photo1,
+        "about_photo2": about_photo2,
+        "about_photo3": about_photo3,
+        "about_photo4": about_photo4,
     }
 
     return render(request, "catalog/about.html", context)
+
 
 def ochrana(request):
     categories = Category.objects.all()
@@ -500,15 +503,18 @@ def recommended_products(product_id):
     return recommendations[:5]
 
 
-def akce(request):
-    products = Product.objects.all().filter(active=True)
-    discounted = Product.objects.exclude(discount__isnull=True).filter(active=True)
+def akce(request, token):
+    if token == "aB3nK8mPq2":
 
-    print("these are akce discounts:", discounted)
+        products = Product.objects.all().filter(active=True)
+        discounted = Product.objects.exclude(discount__isnull=True).filter(active=True)
 
-    return render(
-        request, "catalog/akce.html", {"products": products, "discounted": discounted}
-    )
+        print("these are akce discounts:", discounted)
+
+        return render(
+            request, "catalog/akce.html", {"products": products, "discounted": discounted}
+        )
+
 
 
 def discover_your_set(request):
