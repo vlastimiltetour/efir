@@ -161,7 +161,7 @@ class Cart:
         if isinstance(self.country, str):
             country = self.country.upper()
             print("country", country)
-    
+
         shipping_type = self.shipping
         # price
         ppl_prices = {
@@ -244,11 +244,19 @@ class Cart:
         if shipping is not None:
             return shipping
         elif shipping == "Z":
+            print("shipping", shipping)
             return "Zásilkovna"
         elif shipping == "O":
+            print("shipping", shipping)
             return "Online"
         elif shipping == "S":
+            print("shipping", shipping)
             return "Osobní odběr"
+        elif shipping == "D":
+            print("shipping", shipping)
+            return "PPL Doručení domů"
+        elif shipping == "P":
+            return "PPL Parcelbox"
 
         return "Nevyplněno"
 
@@ -411,3 +419,10 @@ class Cart:
 
     def transfer_discount_to_orders(self):
         return self.get_total_price_after_discount() - self.get_total_price()
+
+    def amount_to_free_delivery(self):
+        amount = 4000 - int(self.get_total_price()) 
+        print(amount)
+        if amount > 0:
+            return amount
+        

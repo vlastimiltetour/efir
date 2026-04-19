@@ -237,9 +237,13 @@ async></script>
             {{ coupon_form }}
             <button type="submit" class="btn btn-secondary">Uplatnit</button>
          </div>
+          <div class="input-group">
+            {{ coupon_form }}
+            <button type="submit" class="btn btn-secondary">Uplatnit</button>
+         </div>
          {% csrf_token %}
 
-     
+   
       </form>
       {% endif %}
      
@@ -476,12 +480,19 @@ async></script>
                         <div class="input-group">
                            {{ coupon_form }} 
                            <button type="submit" class="btn btn-secondary">Uplatnit</button>
-                        </div>
+                        </div> 
                         {% csrf_token %}
                      </form>
             {% endif %}
-            {% if messages %}
             
+            {% if cart.amount_to_free_delivery %}
+            <div style="color: #961919; background-color: #f8f9fa; /* Žlutá barva */" class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show mt-3" role="alert">
+               Do dopravy zdarma zbývá {{ cart.amount_to_free_delivery}} Kč. 
+                     
+            </div>
+            {% endif %}
+               
+            {% if messages %}
                 {% for message in messages %}
                     <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show mt-3" role="alert">
                         {{ message }}
