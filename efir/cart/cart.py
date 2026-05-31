@@ -165,7 +165,7 @@ class Cart:
         shipping_type = self.shipping
         # price
         ppl_prices = {
-            "CZ": 129,
+            "CZ": 139,
             "PL": 180,
             "CH": 180,
             "SK": 180,
@@ -193,7 +193,7 @@ class Cart:
             "AT": 180,
         }
 
-        zasilkovna_prices = {"CZ": 99, "SK": 109}
+        zasilkovna_prices = {"CZ": 109, "SK": 119}
 
         parcelbox = {"CZ": 109, "SK": 130, "PL": 130, "DE": 130}
 
@@ -421,8 +421,7 @@ class Cart:
         return self.get_total_price_after_discount() - self.get_total_price()
 
     def amount_to_free_delivery(self):
-        amount = 4000 - int(self.get_total_price()) 
+        amount = 4000 - int(self.get_total_price())
         print(amount)
         if amount > 0:
             return amount
-        
