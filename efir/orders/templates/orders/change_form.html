@@ -1,0 +1,31 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{# 1. Úprava hlavního nadpisu (přidání nápisu STORNO) #}
+{% block content_title %}
+    <div class="flex items-center gap-3">
+        {{ block.super }}
+        
+        {% if original.cancelled %}
+        <div style="background-color: #e30d1f; color: #ffffff; border: 1px solid #ed0018; padding: 10px 15px; margin-bottom: 20px; border-radius: 4px; font-weight: bold; display: inline-block; text-transform: uppercase;">
+            STORNO ({{ original.cancelled|date:"d. m. Y H:i" }})
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}
+
+{# 2. Tvoje stávající tlačítka nástrojů #}
+{% block object-tools-items %}
+    {{ block.super }}
+
+    {# Tlačítko pro storno zobrazíme jen tehdy, pokud objednávka ještě stornovaná NENÍ #}
+
+    {% if not original.cancelled %}
+        <li>
+            <a href="{% url 'admin:orders-order-cancel' original.pk %}" class="bg-red-600 text-white hover:bg-red-700 px-3 py-2 rounded text-sm font-medium">
+                Storno objednávky
+            </a>
+        </li>
+  
+    {% endif %}
+{% endblock %}

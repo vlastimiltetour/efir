@@ -80,10 +80,8 @@ def customer_order_email_confirmation(order_id: int) -> bool:
             order_id,
         )
         Order.objects.filter(id=order_id).update(
-            paid_confirmation_sent=True,
-            paid=True
+            paid_confirmation_sent=True, paid=True, status="Z"
         )
-
 
     except (ssl.SSLCertVerificationError, SSLError) as e:
         logger.error("Failed to send email due to SSL error: %s", e)
@@ -116,7 +114,7 @@ from .models import Order
 def unpaid_customer_order_email_confirmation(order_id):
     try:
         # This forces Django to fetch the Order and all its related items in one coordinated move. By using this inside transaction.on_commit, you are essentially telling Django: "Wait until the whole transaction is finished, then go get the Order and its items together."
-        order = Order.objects.prefetch_related('items').get(id=order_id)
+        order = Order.objects.prefetch_related("items").get(id=order_id)
 
     except Order.DoesNotExist:
         logger.warning(f"Order with ID {order_id} not found. Skipping email.")
@@ -132,23 +130,25 @@ def unpaid_customer_order_email_confirmation(order_id):
         bcc=["objednavky@efirthebrand.cz"],
     )
     msg.attach_alternative(html_content, "text/html")
-    
+
     if not order.items.exists():
-        logger.warning(f"Order {order_id} has no items yet (order.items). Retrying fetch.")
+        logger.warning(
+            f"Order {order_id} has no items yet (order.items). Retrying fetch."
+        )
         # Small fallback: re-fetch from DB to bypass any cache
         order = Order.objects.get(id=order_id)
 
-    if order.confirmation_sent == True:
-        logger.info(f"Order {order_id} cannot be sent again - it's been marked as sent already in DB.")
-        return 
-    
+    if order.confirmation_sent is True:
+        logger.info(
+            f"Order {order_id} cannot be sent again - it's been marked as sent already in DB."
+        )
+        return
+
     try:
         msg.send()
-        logger.info('the order has been created, but unpaid, order_id', order_id)
-        Order.objects.filter(id=order_id).update(
-            confirmation_sent=True
-        )
-        
+        logger.info("the order has been created, but unpaid, order_id", order_id)
+        Order.objects.filter(id=order_id).update(confirmation_sent=True)
+
     except (ssl.SSLCertVerificationError, SSLError) as e:
         logger.error("Failed to send email due to SSL error: %s", e)
 
@@ -283,3 +283,41 @@ def order_shipped(order_id):
         )
     msg.attach_alternative(html_content, "text/html")
     return msg.send()
+
+
+def order_cancellation(order_id):
+    order = Order.objects.get(id=order_id)
+
+    if order.cancelled:
+        html_content = render_to_string("orders/storno.html", {"order": order})
+        msg = EmailMultiAlternatives(
+            subject=("Storno Vaší objednávky."),
+            from_email="objednavky@efirthebrand.cz",
+            to=[order.email],
+            bcc=["objednavky@efirthebrand.cz"],
+        )
+
+    msg.attach_alternative(html_content, "text/html")
+
+    try:
+        msg.send()
+    except (ssl.SSLCertVerificationError, SSLError) as e:
+        logger.error("Failed to send email due to SSL error: %s", e)
+
+    except (
+        SMTPDataError,
+        SMTPException,
+        SMTPRecipientsRefused,
+        SMTPSenderRefused,
+    ) as e:
+        logger.error("Failed to send email: %s", e)
+        return False
+
+    except Exception as e:
+        logger.error("An unexpected error occurred: %s", e)
+        logger.info(
+            "Attempting to send customer order confirmation email for order ID without PDF %s",
+            order_id,
+        )
+
+        return False

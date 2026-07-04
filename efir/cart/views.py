@@ -112,6 +112,7 @@ def update_cart_quantity(request, item_id):
     cart.update_quantity(item_id, new_quantity)
     return redirect("cart:cart_detail")
 
+
 # Atomicity: By using @transaction.atomic, Django groups the Order creation and all OrderItem creations into one single "all or nothing" database command
 @transaction.atomic
 def cart_detail(request, zasilkovna=True):
@@ -207,6 +208,7 @@ def cart_detail(request, zasilkovna=True):
                 commit=False
             )  # In this line, you are using a Django ModelForm (order_form) to create an Order instance. The commit=False argument prevents the instance from being saved to the database immediately. Instead, it returns an unsaved instance of the model. This allows you to make additional modifications to the instance before saving it to the database.
 
+            order.status = "P"
             order.save(cart=cart)
             order.city = selected_cart_city
 
@@ -382,6 +384,7 @@ def cart_detail(request, zasilkovna=True):
 def update_cart_country(request, online=None):
     cart = Cart(request)
 
+    print("cart get shipping", cart.get_shipping())
     if cart.get_shipping() == "S":
         if request.method == "POST":
             selected_country = request.POST.get(

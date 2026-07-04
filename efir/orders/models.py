@@ -8,6 +8,15 @@ from catalog.models import Product
 
 
 class Order(models.Model):
+    COUNTRY_CHOICES = [("CZ", "cz"), ("SK", "sk")]
+
+    ORDER_STATUS_CHOICES = (
+        ("P", "Potvrzeno"),
+        ("Z", "Zaplaceno"),
+        ("V", "Vyřízeno"),
+        ("S", "Storno"),
+    )
+
     etb_id = models.CharField(max_length=50, verbose_name="Efir ID")
     first_name = models.CharField(max_length=50, verbose_name="Jméno")
     last_name = models.CharField(max_length=50, verbose_name="Příjmení")
@@ -17,11 +26,17 @@ class Order(models.Model):
     comments = models.TextField(blank=True, verbose_name="Komentáře")
     created = models.DateTimeField(auto_now_add=True, verbose_name="Vytvořeno")
     updated = models.DateTimeField(auto_now=True, verbose_name="Aktualizováno")
+    cancelled = models.DateTimeField(verbose_name="Stornováno", null=True, blank=True)
 
-    COUNTRY_CHOICES = [("CZ", "cz"), ("SK", "sk")]
+    status = models.CharField(
+        max_length=20,
+        choices=ORDER_STATUS_CHOICES,
+        verbose_name="Stav objednávky",
+        default="-",
+    )
 
     country = models.CharField(max_length=20, verbose_name="Země")
-    shipping_type = (  # TODO I need to add new option personal pickup here
+    shipping_type = (
         ("", "Vyberte si způsob dopravy"),
         ("P", "PPL"),
         ("D", "PPL - Doručení domů"),
@@ -76,7 +91,9 @@ class Order(models.Model):
         default=True, verbose_name="Objednávka vytvořena (nezaplaceno)"
     )
     paid = models.BooleanField(default=False, verbose_name="Zaplaceno")
-    shipped = models.BooleanField(default=False, verbose_name="Vyřízeno")
+    shipped = models.BooleanField(
+        default=False, verbose_name="Vyřízeno"
+    )  # TODO retire this
     newsletter_consent = models.BooleanField(
         default=False, verbose_name="Souhlas - newsletter", null=True, blank=True
     )
@@ -126,6 +143,9 @@ class Order(models.Model):
 
     def get_zasilkovna_url(self):
         pass
+
+    def get_total_price_without_shipping(self):
+        return self.total_cost - self.shipping_price
 
     def save(self, *args, **kwargs):
         # self.shipping_price = self.calculate_shipping_price()

@@ -3,17 +3,20 @@ from datetime import datetime
 
 from django.contrib import admin
 from django.http import HttpResponse
-from django.urls import reverse
+from django.urls import path, reverse
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
+from .mail_confirmation import certificate_order_email_confirmation
 from .models import Order, OrderItem
-from .mail_confirmation import certificate_order_email_confirmation  
+from .services import OrderStatusService
 
 
 @admin.action(description="📧 Poslat certifikát emailem")
 def send_certificate_email(modeladmin, request, queryset):
     for order in queryset:
         certificate_order_email_confirmation(order.id)
+
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
@@ -52,26 +55,67 @@ class OrderItemInline(admin.TabularInline):
 
     def has_delete_permission(self, request, obj=None):
         return True
-    
-    
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    # Cancel Button Functionality
+    # HTML templates
+    change_form_template = "orders/change_form.html"
+
+    # Figure out url path
+    def get_urls(self):
+        urls = super().get_urls()
+
+        custom_urls = [
+            path(
+                "<int:order_id>/cancel/",
+                self.admin_site.admin_view(self.cancel_order_view),
+                name="orders-order-cancel",
+            ),
+        ]
+
+        return custom_urls + urls
+
+    # create a view
+    def cancel_order_view(self, request, order_id):
+        from django.shortcuts import get_object_or_404, redirect
+
+        from orders.models import Order
+
+        order = get_object_or_404(Order, pk=order_id)
+
+        OrderStatusService.mark_as_cancelled(order)
+
+        return redirect(f"../../{order_id}/change/")
+
+    # Define the button visuals
+    def cancel_button(self, obj):
+        if not obj or obj.status == "S":
+            return ""
+
+        url = reverse("admin:orders-order-cancel", args=[obj.pk])
+
+        return format_html(
+            '<a class="button" style="background:#ba2121;color:white" href="{}">'
+            "Storno objednávky</a>",
+            url,
+        )
+
+    cancel_button.short_description = "Storno"
+
     list_display = [
         "etb_id",
         "products",
         "short_description",
         "total_cost",
+        "status",
+        "updated",
         "paid",
-        "shipped",
-        # "discount",
-        # "quantity",
         "author_comment",
         "first_name",
         "last_name",
         "email",
-        # "birthday",
         "number",
         "newsletter_consent",
         "comments",
@@ -100,7 +144,14 @@ class OrderAdmin(admin.ModelAdmin):
         ),
         (
             "Order Status & Communication",
-            {"classes": ("wide",), "fields": (("order_created", "paid", "shipped"),)},
+            {
+                "classes": ("wide",),
+                "fields": (
+                    ("status",),
+                    ("order_created", "paid", "shipped"),
+                    ("cancel_button", "cancelled"),
+                ),
+            },
         ),
         (
             "Customer Information",
@@ -144,9 +195,12 @@ class OrderAdmin(admin.ModelAdmin):
         "shipped_sent",
         "created",
         "updated",
+        "status",
+        "cancel_button",
+        "cancelled",
     ]
-    inlines = [OrderItemInline]
 
+    inlines = [OrderItemInline]
 
     def send_manual_confirmation(self, obj):
         pass
@@ -353,5 +407,3 @@ class OrderAdmin(admin.ModelAdmin):
     export_to_csv.short_description = "Exportovat do CSV"
 
     actions = ["export_to_csv", send_certificate_email]
-
-
