@@ -110,7 +110,7 @@ class OrderAdmin(admin.ModelAdmin):
         "short_description",
         "total_cost",
         "status",
-        "updated",
+        "created",
         "paid",
         "author_comment",
         "first_name",
@@ -124,6 +124,7 @@ class OrderAdmin(admin.ModelAdmin):
         "created",
         "discount_code",
         "download_label",
+        "updated",
     ]
 
     fieldsets = (

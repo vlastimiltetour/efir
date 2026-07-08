@@ -25,6 +25,8 @@ logging.basicConfig(level=logging.DEBUG)
 logging.getLogger("botocore").setLevel(logging.CRITICAL)
 logging.getLogger("boto3").setLevel(logging.CRITICAL)
 
+
+# comment this in case of using pytest
 try:
     logging.info("Loading local Env Module")
     import dotenv
@@ -39,7 +41,6 @@ except AttributeError:
     logging.info("Loading Production Env Module")
 finally:
     logging.info("The whole dotenv cycle finished")
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -64,6 +65,7 @@ AUTHENTICATION_BACKENDS = (
 
 
 INSTALLED_APPS = [
+    "unfold",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -88,9 +90,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.cache.UpdateCacheMiddleware", # caching page for scrolling restoration
+    "django.middleware.cache.UpdateCacheMiddleware",  # caching page for scrolling restoration
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.cache.FetchFromCacheMiddleware", # caching page for scrolling restoration
+    "django.middleware.cache.FetchFromCacheMiddleware",  # caching page for scrolling restoration
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -183,7 +185,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520  # 20 MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 20971520  # 20 MB
 
 AWS_S3_ENDPOINT_URL = (
-    #"https://etb.fra1.digitaloceanspaces.com"  # Change to your region's endpoint
+    # "https://etb.fra1.digitaloceanspaces.com"  # Change to your region's endpoint
     "https://etb.fra1.digitaloceanspaces.com"
 )
 
@@ -236,49 +238,27 @@ STATICFILES_DIRS = (BASE_DIR / "static",)
 MEDIA_ROOT = BASE_DIR / "mediafiles"
 
 
-# oddeleny pro prod spaces
+# efir/settings/base.py ## UPDATE TO LOCAL AND PROD
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = (BASE_DIR / "static",)
 
-# Spaces settings
-# https://stackoverflow.com/questions/76940089/signaturedoesnotmatch-digitalocean-spaces-boto3-django-storages-django
-AWS_ACCESS_KEY_ID = str(os.getenv("AWS_ACCESS_KEY_ID"))
-AWS_SECRET_ACCESS_KEY = str(os.getenv("AWS_SECRET_ACCESS_KEY"))
-AWS_STORAGE_BUCKET_NAME = "etb"
-AWS_DEFAULT_ACL = "public-read"
-AWS_S3_ENDPOINT_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.fra1.digitaloceanspaces.com"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "mediafiles"
 
-AWS_S3_REGION_NAME = "fra1"
 
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-    "ACL": "public-read",  # THIS LINE IS OPTIONAL
+UNFOLD = {
+    "SITE_HEADER": "Efir The Brand",  # Změní text v levém horním rohu / na přihlašovací obrazovce
+    "SITE_TITLE": "Efir - Admin",  # Změní text v titulku karty prohlížeče
+    "INDEX_TITLE": "Vítejte ve správě webu",  # Změní velký nadpis na úvodní stránce
+    "SIDEBAR": {
+        "show_search": True,  # Doporučuji nechat pro rychlé hledání
+        "show_all_applications": True,  # Nechá automatické generování menu zapnuté
+    },
+    # Zde vypíšeš aplikace, které mají v menu zůstat SKRYTÉ (ostatní se zobrazí samy)
+    "AVAILABLE_APPS": {
+        # Například pokud chceš skrýt výchozí Django Autentizaci (Uživatelé/Skupiny):
+        "auth": {"visible": False},
+        "inventory": {"visible": False},
+    },
 }
-
-# static settings
-# AWS_LOCATION = 'static'
-
-
-# Static files settings: this works
-STATIC_URL = "https://etb.fra1.cdn.digitaloceanspaces.com/static/"
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
-
-# Optional: Set S3 object parameters
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-    "ACL": "public-read",
-}
-
-# Public media files
-AWS_PUBLIC_MEDIA_LOCATION = "media"
-DEFAULT_FILE_STORAGE = "efir.settings.storage_backends.MediaStorage"
-MEDIA_URL = f"https://etb.fra1.cdn.digitaloceanspaces.com/{AWS_PUBLIC_MEDIA_LOCATION}/"
-
-
-
-# Optional: Set S3 object parameters (again, if needed)
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-    "ACL": "public-read",
-}
-
-APPEND_SLASH = True
