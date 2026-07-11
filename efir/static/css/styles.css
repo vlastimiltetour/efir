@@ -598,6 +598,39 @@ progress {
   content: "— ";
 }
 
+
+.product-image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image-container .card {
+    position: relative;
+    overflow: hidden;
+}
+
+.img-default,
+.img-hover {
+    display: block;
+    width: 100%;
+    transition: opacity .3s ease;
+}
+
+.img-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.product-image-container:hover .img-default {
+    opacity: 0;
+}
+
+.product-image-container:hover .img-hover {
+    opacity: 1;
+}
+
 .img-fluid-rozmery {
   object-fit: cover;
   object-position: center;

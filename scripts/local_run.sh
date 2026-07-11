@@ -1,6 +1,6 @@
 echo "Starting Python library setup..."
-echo "$(date) - Changing directory to /Users/vlastimil/Coding_Projects/etb/"
-cd /Users/vlastimil/Coding_Projects/etb/
+echo "$(date) - Changing directory to /Users/vlastimil/Coding_Projects/efir_local/efir/"
+cd /Users/vlastimil/Coding_Projects/efir_local/efir/
 
 echo "$(date) - Installing virtualenv"
 python3 -m pip install virtualenv
@@ -17,8 +17,8 @@ source venv/bin/activate
 echo "$(date) - Installing required packages from requirements.txt"
 pip install -r requirements.txt
 
-echo "$(date) - Changing directory to /Users/vlastimil/Coding_Projects/etb/efir/"
-cd /Users/vlastimil/Coding_Projects/etb/efir/
+echo "$(date) - Changing directory to /Users/vlastimil/Coding_Projects/efir_local/efir/efir/"
+cd /Users/vlastimil/Coding_Projects/efir_local/efir/efir/
 
 echo "$(date) - Running black code formatter"
 black .
