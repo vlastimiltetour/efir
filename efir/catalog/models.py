@@ -323,8 +323,9 @@ class Certificate(models.Model):
 
 class BackgroundPhoto(models.Model):
     name = models.CharField(max_length=255)
+    
     photo = models.ImageField(
-        upload_to="catalog/background",
+        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
         verbose_name="Hlavni fotka",
     )
 
@@ -336,7 +337,7 @@ class BackgroundPhoto(models.Model):
 class LeftPhoto(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/background",
+        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
         verbose_name="Fotka vlevo",
     )
 
@@ -348,7 +349,7 @@ class LeftPhoto(models.Model):
 class RightdPhoto(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/background",
+        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
         verbose_name="Fotka vpravo",
     )
 
