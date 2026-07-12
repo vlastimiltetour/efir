@@ -412,7 +412,7 @@ class MappingSetNaMiru(models.Model):
 class AboutPhoto1(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/background",
+        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
         verbose_name="About fotka 1",
     )
 
@@ -422,7 +422,7 @@ class AboutPhoto1(models.Model):
 class AboutPhoto2(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/background",
+        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
         verbose_name="About fotka 2",
     )
 
@@ -432,7 +432,7 @@ class AboutPhoto2(models.Model):
 class AboutPhoto3(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/background",
+        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
         verbose_name="About fotka 3",
     )
 
@@ -442,7 +442,7 @@ class AboutPhoto3(models.Model):
 class AboutPhoto4(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/background",
+        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
         verbose_name="About fotka 4",
     )
 
