@@ -315,7 +315,8 @@ class Certificate(models.Model):
         default=0,
         null=True,
     )
-    photo = models.ImageField(upload_to="catalog/%Y/%m/%d", blank=True)
+    photo = models.ImageField(upload_to="catalog/%Y/%m/%d",
+        storage=MediaStorage(),blank=True)
 
     class Meta:
         verbose_name = "Detail certifikátu"
@@ -323,9 +324,10 @@ class Certificate(models.Model):
 
 class BackgroundPhoto(models.Model):
     name = models.CharField(max_length=255)
-    
+
     photo = models.ImageField(
-        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
+        upload_to="catalog/%Y/%m/%d",
+        storage=MediaStorage(),
         verbose_name="Hlavni fotka",
     )
 
@@ -337,7 +339,8 @@ class BackgroundPhoto(models.Model):
 class LeftPhoto(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
+        upload_to="catalog/%Y/%m/%d",
+        storage=MediaStorage(),
         verbose_name="Fotka vlevo",
     )
 
@@ -349,7 +352,8 @@ class LeftPhoto(models.Model):
 class RightdPhoto(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
+        upload_to="catalog/%Y/%m/%d",
+        storage=MediaStorage(),
         verbose_name="Fotka vpravo",
     )
 
@@ -412,37 +416,44 @@ class MappingSetNaMiru(models.Model):
 class AboutPhoto1(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
+        upload_to="catalog/%Y/%m/%d",
+        storage=MediaStorage(),
         verbose_name="About fotka 1",
     )
 
     class Meta:
         verbose_name = "About fotka 1"
 
+
 class AboutPhoto2(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
+        upload_to="catalog/%Y/%m/%d",
+        storage=MediaStorage(),
         verbose_name="About fotka 2",
     )
 
     class Meta:
         verbose_name = "About fotka 2"
 
+
 class AboutPhoto3(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
+        upload_to="catalog/%Y/%m/%d",
+        storage=MediaStorage(),
         verbose_name="About fotka 3",
     )
 
     class Meta:
         verbose_name = "About fotka 3"
 
+
 class AboutPhoto4(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(
-        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(),
+        upload_to="catalog/%Y/%m/%d",
+        storage=MediaStorage(),
         verbose_name="About fotka 4",
     )
 
