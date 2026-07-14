@@ -167,9 +167,12 @@ class Photo(models.Model):
     )
     photo = models.ImageField(upload_to="catalog/%Y/%m/%d", storage=MediaStorage())
 
+    photo_order = models.PositiveIntegerField(null=True, blank=True)
+
     class Meta:
         verbose_name = "Fotografie"
         verbose_name_plural = "Fotografie"
+        ordering = ["photo_order", "id"]
 
 
 # import PIL for image resizing
