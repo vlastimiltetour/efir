@@ -172,7 +172,7 @@ class Photo(models.Model):
     class Meta:
         verbose_name = "Fotografie"
         verbose_name_plural = "Fotografie"
-        ordering = ["photo_order", "id"]
+        ordering = ["photo_order", "-id"]
 
 
 # import PIL for image resizing
