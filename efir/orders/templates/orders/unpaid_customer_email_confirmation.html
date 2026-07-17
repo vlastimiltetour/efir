@@ -256,13 +256,45 @@ table.table td:nth-child(2), table.table th:nth-child(2) {
     <div class="container">
     <hr class="my-4">
 
-          <p>
-            {{ order.first_name }},<br>
-            <br>
+    <p>
+        {{ order.first_name }},
+    </p>
 
-            Vaše objednávka #{{order.etb_id}} nám byla doručena. Budeme se ji snažit zpracovat v co nejkratší době. V případě, že jste objednali produkt “Na míru”, ušijeme jej nejpozději do 2 týdnů. Toto je automaticky generované potvrzení objednávky. Pokud máte jakékoli dotazy týkající se vaší objednávky, odepište, prosím, zpět na tento email.
-             </p>
-<br>
+    <p>
+        děkujeme za Vaši objednávku <strong>#{{ order.etb_id }}</strong>.
+        Vaše objednávka byla úspěšně přijata.
+    </p>
+
+    <p>
+        Po přijetí platby ji začneme připravovat ke zpracování.
+        U produktů na míru zahájíme výrobu ihned po obdržení platby.
+        Maximální doba zhotovení je 2 týdny.
+    </p>
+
+    <p>
+        Pokud by nastal problém s platbou online, můžete využít také bankovní převod:
+    </p>
+
+    <p>
+        <strong>Číslo účtu: 2270534028/3030</strong><br>
+        Variabilní symbol nebo poznámka k platbě:
+        <strong>číslo Vaší objednávky</strong>
+    </p>
+
+    <p>
+        Toto je automaticky generované potvrzení objednávky.
+        V případě dotazů stačí odpovědět na tento e-mail.
+    </p>
+
+    <p>
+        Děkujeme za Vaši důvěru.
+    </p>
+
+    <p>
+        S pozdravem<br>
+        <strong>Tým EFIR</strong>
+    </p>
+</div>
 
 
 
@@ -412,7 +444,7 @@ table.table td:nth-child(2), table.table th:nth-child(2) {
   <tr>
       <td align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 24px;">
           <p style="font-size: 14px; font-weight: 400; line-height: 20px; color: #777777;">
-          {% trans "© 2023 efirthebrand. Všechna práva vyhrazena. Tuto zprávu jsme vám poslali, protože jste registrováni na www.efirthebrand.cz pod adresou" %} {{order.email}}. {% trans "Pokud si myslíte, že vám byla poslána omylem nebo vám nevyhovuje četnost našich emailů, můžete se " %}<u><a href="{% url 'newsletter:unsubscribe' %}" target="_blank" style="color: #777777;">{% trans "odhlásit" %}</a></u> {% trans "nebo změnit frekvenci zasílání." %}
+          {% trans "© 2026 efirthebrand. Všechna práva vyhrazena. Tuto zprávu jsme vám poslali, protože jste registrováni na www.efirthebrand.cz pod adresou" %} {{order.email}}. {% trans "Pokud si myslíte, že vám byla poslána omylem nebo vám nevyhovuje četnost našich emailů, můžete se " %}<u><a href="{% url 'newsletter:unsubscribe' %}" target="_blank" style="color: #777777;">{% trans "odhlásit" %}</a></u> {% trans "nebo změnit frekvenci zasílání." %}
               <!--If you didn't create an account using this email address, please ignore this email or <a href="#" target="_blank" style="color: #777777;">unsusbscribe</a>.-->
           </p>
       </td>

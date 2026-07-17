@@ -61,7 +61,7 @@ def customer_order_email_confirmation(order_id: int) -> bool:
         pdf_out = None
 
     msg = EmailMultiAlternatives(
-        subject=f"Vaše objednávka #{order.etb_id} je potvrzena [ZAPLACENO].",
+        subject=f"Platba přijata. Začínáme připravovat Vaši objednávku #{order.etb_id}",
         from_email="objednavky@efirthebrand.cz",
         to=[order.email],
         bcc=["objednavky@efirthebrand.cz"],
@@ -124,7 +124,7 @@ def unpaid_customer_order_email_confirmation(order_id):
         "orders/unpaid_customer_email_confirmation.html", {"order": order}
     )
     msg = EmailMultiAlternatives(
-        subject=(f"Vaše objednávka #{order.etb_id} je potvrzena [NEUHRAZENO]"),
+        subject=(f"Potvrzení přijetí objednávky #{order.etb_id}"),
         from_email="objednavky@efirthebrand.cz",
         to=[order.email],
         bcc=["objednavky@efirthebrand.cz"],
