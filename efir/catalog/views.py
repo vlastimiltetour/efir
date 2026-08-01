@@ -33,7 +33,7 @@ from .models import (AboutPhoto1, AboutPhoto2, AboutPhoto3, AboutPhoto4,
                      MappingSetNaMiru, Product, ProductSet, RightdPhoto,
                      UniqueSetCreation)
 from .recommendation import *
-
+from catalog.ml import get_data
 
 def create_contact(request):
     contact_instance = ContactModel(
@@ -245,7 +245,7 @@ def catalog_product_list(request, category_slug=None):
         )
 
     sum_of = len(products)
-    print('sum of', sum_of)
+    print("sum of", sum_of)
 
     selected_sizes = clean_session_names(size_selection_session)
     selected_zpubob_vyroby = clean_session_names(zpusob_vyroby_session)
@@ -356,21 +356,8 @@ def product_detail(
     product = get_object_or_404(Product, id=id, slug=slug)
     form = CartAddProductForm(id_from_product=id)
 
-    rc = RecommenderSystem(cz_stop_words)
-    # rc.retrieve_product_feed()
-    # rc.train_model()
-    recommended = []
-
-    try:
-        list_of_recommended = rc.recommend_products(str(id))
-        print("list of rec", list_of_recommended)
-        if list_of_recommended:
-            recommended = Product.objects.filter(id__in=list_of_recommended)
-            recommended = recommended[:5]
-    except ValueError:
-        recommended = []
-    except TypeError:
-        recommended = []
+    
+    recommended = get_data.get_recommendations(target_product=id)
 
     try:
         productset = ProductSet.objects.get(product=product)
@@ -505,16 +492,16 @@ def recommended_products(product_id):
 
 def akce(request, token):
     if token == "aB3nK8mPq2":
-
         products = Product.objects.all().filter(active=True)
         discounted = Product.objects.exclude(discount__isnull=True).filter(active=True)
 
         print("these are akce discounts:", discounted)
 
         return render(
-            request, "catalog/akce.html", {"products": products, "discounted": discounted}
+            request,
+            "catalog/akce.html",
+            {"products": products, "discounted": discounted},
         )
-
 
 
 def discover_your_set(request):
