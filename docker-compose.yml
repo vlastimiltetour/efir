@@ -39,19 +39,3 @@ services:
     ports:
       - "80:80"
       - "443:443"
-
-  db_backup:
-    build: . 
-    command: >
-      sh -c "python ./efir/manage.py dumpdata --exclude auth.permission --exclude contenttypes --format=json --indent 2 > /backups/db_backup_$(date +%Y_%m_%d_%H_%M).json"
-    volumes:
-      - /home/etb/efir/backups:/backups
-    environment:
-      - DJANGO_SETTINGS_MODULE=efir.settings.prod
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    depends_on:
-      - nginx
-      - app
-      - db
