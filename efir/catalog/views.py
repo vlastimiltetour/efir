@@ -367,6 +367,7 @@ def product_detail(
         if list_of_recommended:
             recommended = Product.objects.filter(id__in=list_of_recommended)
             recommended = recommended[:5]
+            recommended = [] # TODO tady je to vypnute
     except ValueError:
         recommended = []
     except TypeError:
