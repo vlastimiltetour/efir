@@ -3,7 +3,6 @@ from .base import *
 # run from terminal
 """
 export DJANGO_SETTINGS_MODULE=efir.settings.local
-set DJANGO_SETTINGS_MODULE=efir.settings.local
 python3 manage.py runserver 0.0.0.0:8000
 ifconfig | grep "inet"
 """

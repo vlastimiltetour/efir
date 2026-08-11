@@ -3,7 +3,7 @@ from django.db import models
 from django.urls import reverse  # this is when calling an address by name
 
 from efir.settings.storage_backends import MediaStorage
-
+from pathlib import Path
 
 # Create your models here.
 class Product(models.Model):
@@ -168,6 +168,20 @@ class Photo(models.Model):
     photo = models.ImageField(upload_to="catalog/%Y/%m/%d", storage=MediaStorage())
 
     photo_order = models.PositiveIntegerField(null=True, blank=True)
+
+    @property
+    def thumbnail_name(self):
+        path = Path(self.photo.name)
+
+        return str(
+            path.with_name(
+            f"{path.stem}_thumb.webp"
+            )
+        )
+
+    @property
+    def thumbnail_url(self):
+        return self.photo.storage.url(self.thumbnail_name)
 
     class Meta:
         verbose_name = "Fotografie"
