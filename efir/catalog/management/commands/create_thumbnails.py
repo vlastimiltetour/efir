@@ -44,37 +44,38 @@ class Command(BaseCommand):
                 continue
 
             try:
-                img = Image.open(self.photo)
-                img.verify()
-                # reopen because img.verify() moves pointer to the end of the file
-                img = Image.open(self.photo)
+                with photo.photo.storage.open(original_name,"rb") as source:
 
-                # convert png to RGB
-                if img.mode in ("RGBA", "LA", "P"):
-                    img = img.convert("RGB")
+                    image = Image.open(source)
+                    image = ImageOps.exif_transpose(image)
 
-                # Calculate new dimensions to maintain aspect ratio with a width of 800
-                new_width = 800
-                original_width, original_height = img.size
-                new_height = int((new_width / original_width) * original_height)
+                    # WebP → RGB
+                    if image.mode != "RGB":
+                        image = image.convert("RGB")
 
-                # Resize the image
-                img = img.resize((new_width, new_height), Image.LANCZOS)
+                    
+                    # Conversion
+                    image.thumbnail((THUMBNAIL_SIZE, THUMBNAIL_SIZE), Image.Resampling.LANCZOS,)
 
-                # Prepare the image for saving
-                temp_img = BytesIO()
-                # Save the image as JPEG
-                img.save(temp_img, format="JPEG", quality=70, optimize=True)
-                temp_img.seek(0)
+                    # Prepare the image for saving
+                    output = BytesIO(())
+                    
+                    # Save the image as WEBP
+                    image.save(output, format="WEBP", quality=THUMBNAIL_QUALITY, method=6)
+                    
 
-                # Change file extension to .jpg
-                original_name, _ = self.photo.name.lower().split(".")
-                img = f"{original_name}.jpg"
+                    # Save the BytesIO object to the ImageField with the new filename
+                    photo.photo.storage.save(thumbnail_name, ContentFile(output.getvalue()))
 
-                # Save the BytesIO object to the ImageField with the new filename
-                self.photo.save(img, ContentFile(temp_img.read()), save=False)
+                    created += 1
+
+                    self.stdout.write(
+                    self.style.SUCCESS(
+                        f"CREATED: {thumbnail_name}"
+                    )
+                )
             
-            except (IOError, SyntaxError, Exception()) as e:
+            except (IOError, SyntaxError, Exception) as e:
             
                 errors += 1
 
