@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 from PIL import Image, ImageOps
 
 
-THUMBNAIL_SIZE = 500
+THUMBNAIL_SIZE = 800
 THUMBNAIL_QUALITY = 82
 
 class Command(BaseCommand):
@@ -35,16 +35,17 @@ class Command(BaseCommand):
 
             original_name = photo.photo.name
             thumbnail_name = photo.thumbnail_name
+            storage = photo.photo.storage
 
             print('original_name: ', original_name, "thubmanil_name: ", thumbnail_name)
 
-            if photo.photo.storage.exists(thumbnail_name): #checking the path
+            if storage.exists(thumbnail_name): #checking the path
                 print('checking thumbnail name')
                 skipped += 1
                 continue
 
             try:
-                with photo.photo.storage.open(original_name,"rb") as source:
+                with storage.open(original_name,"rb") as source:
 
                     image = Image.open(source)
                     image = ImageOps.exif_transpose(image)
@@ -58,15 +59,26 @@ class Command(BaseCommand):
                     image.thumbnail((THUMBNAIL_SIZE, THUMBNAIL_SIZE), Image.Resampling.LANCZOS,)
 
                     # Prepare the image for saving
-                    output = BytesIO(())
+                    output = BytesIO()
                     
                     # Save the image as WEBP
                     image.save(output, format="WEBP", quality=THUMBNAIL_QUALITY, method=6)
                     
 
                     # Save the BytesIO object to the ImageField with the new filename
-                    photo.photo.storage.save(thumbnail_name, ContentFile(output.getvalue()))
+                    thumbnail_data = output.getvalue()
 
+                    
+
+                    self.stdout.write(
+                        f"thumbnail_data type = {type(thumbnail_data)}"
+                    )
+
+                    self.stdout.write(
+                        f"thumbnail_data size = {len(thumbnail_data)}"
+)
+                    storage.save(thumbnail_name,ContentFile(thumbnail_data),)
+                    
                     created += 1
 
                     self.stdout.write(
@@ -84,6 +96,7 @@ class Command(BaseCommand):
                         f"ERROR: {original_name}: {e}"
                     )
                 )
+                
 
 
         self.stdout.write("")

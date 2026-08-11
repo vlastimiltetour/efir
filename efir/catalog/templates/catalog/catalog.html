@@ -127,6 +127,8 @@
      </form>
 </div>
   <!-- start of other filter dropdowns as needed -->
+
+
 <!-- labels start labels start -->
 <div class="filters mb-5">
   <form action="{% url 'catalog:delete_selected_filter' %}" method="post">
@@ -200,17 +202,19 @@
               <div class="card mb-2 box-shadow">
                 {% with first_photo=product.photos.first %}
                 
-                {% if first_photo %}
+                {% if first_photo %} <!-- Image performance adjustmenst -->
                 <img class="card-img-top img-fluid img-default" 
-                data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
-                alt="Thumbnail [100%x225]"
-                src="{{ first_photo.photo.url }}"
-                data-holder-rendered="true">
+                src="{{ first_photo.photo.url }}" 
+                alt="{{ product.name }}"
+                width="500" 
+                loading="lazy"
+                decoding="async"> <!-- doesn't load image until the user sees it -->
                 <img class="card-img-top img-fluid img-hover" 
-                data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
-                alt="Thumbnail [100%x225]"
                 src="{{ product.photos.all.1.photo.url }}"
-                data-holder-rendered="true">
+                alt="{{ product.name }}"
+                width="500"
+                loading="lazy"
+                decoding="async">
                 {% endif %}
 
 
@@ -276,24 +280,6 @@
   </div>
   </div>
   </section>
-
-<!-- End Best Sellers -->
-
-
-  <!--
-  <header class="masthead">
-    <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-        <div class="d-flex justify-content-center">
-            <div class="text-center">
-            
-                <h1 class="display-5 fw-bolder">{% trans "🪡 Spodní prádlo na míru" %}</h1>
-                <h2 class="text-white mx-auto mt-2 mb-5">{% trans "Exkluzivní design 🤍" %}</h2>
-                            
-            </div> 
-        </div> 
-    </div>
-</header>
--->
 
 
 

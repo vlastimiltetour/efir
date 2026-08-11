@@ -101,9 +101,15 @@
                 
                 <img class="card-img-top img-fluid img-default" 
                 src="{{ novinka.photos.first.photo.url }}" 
-                alt="{{ novinka.name }}">
+                alt="{{ novinka.name }}"
+                width="500" 
+                loading="lazy"
+                decoding="async">
                   <img class="card-img-top img-fluid img-hover" 
                 src="{{ novinka.photos.all.1.photo.url }}" 
+                width="500" 
+                loading="lazy"
+                decoding="async"
                 alt="{{ novinka.name }}">
                 <div class="discount-circle" style="font-size: 80%;"> NEW </div>
               
@@ -142,7 +148,7 @@
     
 
 
-      <!-- Single Product -->
+      <!-- Bestseller Single Product -->
 
       <div class="col-md-4 mb-4">
         <a href="{{ bestseller.get_absolute_url }}">
@@ -151,10 +157,16 @@
               
               <img class="card-img-top img-fluid img-default" 
               src="{{ bestseller.photos.first.photo.url }}" 
-              alt="{{ bestseller.name }}">
+              alt="{{ bestseller.name }}"
+              width="500" 
+              loading="lazy"
+              decoding="async">
                 <img class="card-img-top img-fluid img-hover" 
               src="{{ bestseller.photos.all.1.photo.url }}" 
-              alt="{{ bestseller.name }}">
+              alt="{{ bestseller.name }}"
+              width="500" 
+              loading="lazy"
+              decoding="async">
               <div class="discount-circle"> BESTSELLER </div>
               {% if bestseller.discount %}
               <div class="discount-circle"> - {{ bestseller.discount }} % </div>
@@ -206,15 +218,24 @@
                   data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
                   alt="Thumbnail [100%x225]"
                   src="{{ first_photo.photo.url }}"
-                  data-holder-rendered="true">
+                  data-holder-rendered="true"
+                  width="500" 
+                  loading="lazy"
+                  decoding="async">
                    <img class="card-img-top img-fluid img-hover" 
                   data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
                   alt="Thumbnail [100%x225]"
                   src="{{ product.photos.all.1.photo.url }}"
-                  data-holder-rendered="true">
+                  data-holder-rendered="true"
+                  width="500" 
+                  loading="lazy"
+                  decoding="async">
                   {% endif %}
                   {% if product.certificate.photo %}
-                  <img src="{{ product.certificate.photo.url }}" alt="{{ product.name }} certificate">
+                  <img src="{{ product.certificate.photo.url }}" alt="{{ product.name }} certificate"
+                  width="500" 
+                  loading="lazy"
+                  decoding="async">
                 
                   {% endif %}
 
