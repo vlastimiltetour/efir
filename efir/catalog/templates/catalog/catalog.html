@@ -204,13 +204,13 @@
                 
                 {% if first_photo %} <!-- Image performance adjustmenst -->
                 <img class="card-img-top img-fluid img-default" 
-                src="{{ first_photo.photo.url }}" 
+                src="{{ first_photo.thumbnail_url }}" 
                 alt="{{ product.name }}"
                 width="500" 
                 loading="lazy"
                 decoding="async"> <!-- doesn't load image until the user sees it -->
                 <img class="card-img-top img-fluid img-hover" 
-                src="{{ product.photos.all.1.photo.url }}"
+                src="{{ product.photos.all.1.thumbnail_url }}"
                 alt="{{ product.name }}"
                 width="500"
                 loading="lazy"
@@ -222,7 +222,7 @@
                 <img class="card-img-top img-fluid" 
                 data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" 
                 alt="{{ product.name }} certificate"
-                src="{{ product.certificate.photo.url }}"
+                src="{{ product.certificate.photo.thumbnail_url }}"
                 data-holder-rendered="true">
               
                 {% endif %}

@@ -30,17 +30,13 @@ class Command(BaseCommand):
             photos = photos[:limit] # then the database itself limits the results. Django won't fetch all photos and then discard the rest.
 
         for photo in photos.iterator(chunk_size=100): # limits db - loads x rows from database, not pictures
-            print('photo', photo)
-
 
             original_name = photo.photo.name
             thumbnail_name = photo.thumbnail_name
             storage = photo.photo.storage
 
-            print('original_name: ', original_name, "thubmanil_name: ", thumbnail_name)
-
             if storage.exists(thumbnail_name): #checking the path
-                print('checking thumbnail name')
+                print('skipping photo, because it exists')
                 skipped += 1
                 continue
 
@@ -68,8 +64,6 @@ class Command(BaseCommand):
                     # Save the BytesIO object to the ImageField with the new filename
                     thumbnail_data = output.getvalue()
 
-                    
-
                     self.stdout.write(
                         f"thumbnail_data type = {type(thumbnail_data)}"
                     )
@@ -87,7 +81,7 @@ class Command(BaseCommand):
                     )
                 )
             
-            except (IOError, SyntaxError, Exception) as e:
+            except Exception as e:
             
                 errors += 1
 
