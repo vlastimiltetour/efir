@@ -207,7 +207,7 @@
                 src="{{ first_photo.thumbnail_url }}" 
                 alt="{{ product.name }}"
                 width="500" 
-                loading="lazy"
+                loading="eager"
                 decoding="async"> <!-- doesn't load image until the user sees it -->
                 <img class="card-img-top img-fluid img-hover" 
                 src="{{ product.photos.all.1.thumbnail_url }}"
