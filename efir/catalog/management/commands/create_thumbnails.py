@@ -35,10 +35,9 @@ class Command(BaseCommand):
             thumbnail_name = photo.thumbnail_name
             storage = photo.photo.storage
 
-            '''if storage.exists(thumbnail_name): #checking the path
-                print('skipping photo, because it exists')
+            if storage.exists(thumbnail_name): #checking the path
                 skipped += 1
-                continue'''
+                continue
 
             try:
                 with storage.open(original_name,"rb") as source:

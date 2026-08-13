@@ -15,6 +15,8 @@ AWS_S3_ENDPOINT_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.fra1.digitaloceanspace
 
 AWS_S3_REGION_NAME = "fra1"
 
+AWS_IS_GZIPPED = True # AWS_IS_GZIPPED option specifically for compressing CSS/JS and other configured content types
+
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
     "ACL": "public-read",  # THIS LINE IS OPTIONAL
@@ -29,23 +31,12 @@ STATIC_URL = "https://etb.fra1.cdn.digitaloceanspaces.com/static/"
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 
-# Optional: Set S3 object parameters
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-    "ACL": "public-read",
-}
-
 # Public media files
 AWS_PUBLIC_MEDIA_LOCATION = "media"
 DEFAULT_FILE_STORAGE = "efir.settings.storage_backends.MediaStorage"
 MEDIA_URL = f"https://etb.fra1.cdn.digitaloceanspaces.com/{AWS_PUBLIC_MEDIA_LOCATION}/"
 
 
-# Optional: Set S3 object parameters (again, if needed)
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-    "ACL": "public-read",
-}
 
 
 ADMINS = [

@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
-from .base import *
-
 DJANGO_SETTINGS_MODULE = "efir.settings.local"
 
 import logging
@@ -265,22 +263,11 @@ STATIC_URL = "https://etb.fra1.cdn.digitaloceanspaces.com/static/"
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 
-# Optional: Set S3 object parameters
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-    "ACL": "public-read",
-}
 
 # Public media files
 AWS_PUBLIC_MEDIA_LOCATION = "media"
 DEFAULT_FILE_STORAGE = "efir.settings.storage_backends.MediaStorage"
 MEDIA_URL = f"https://etb.fra1.cdn.digitaloceanspaces.com/{AWS_PUBLIC_MEDIA_LOCATION}/"
 
-
-# Optional: Set S3 object parameters (again, if needed)
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-    "ACL": "public-read",
-}
 
 APPEND_SLASH = True
