@@ -204,14 +204,14 @@
                 
                 {% if first_photo %} <!-- Image performance adjustmenst -->
                 <img class="card-img-top img-fluid img-default" 
-                src="{{ first_photo.thumbnail_url }}" 
-                alt="{{ product.name|default:first_photo.url }}"
+                src="{{ first_photo.thumbnail_url|default:first_photo.photo.url }}" 
+                alt="{{ product.name }}"
                 width="500" 
                 loading="eager"
                 decoding="async"> <!-- doesn't load image until the user sees it -->
                 <img class="card-img-top img-fluid img-hover" 
-                src="{{ product.photos.all.1.thumbnail_url }}"
-                alt="{{ product.name|default:product.photos.all.1.url }}"
+                src="{{ product.photos.all.1.thumbnail_url|default:product.photos.all.1.photo.url }}"
+                alt="{{ product.name }}"
                 width="500"
                 loading="lazy"
                 decoding="async">
