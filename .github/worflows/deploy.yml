@@ -1,0 +1,53 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH to DigitalOcean
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USERNAME }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          passphrase: ${{ secrets.DO_PASSPHRASE }}
+          script: |
+            set -e
+
+            # Navigate to the project directory
+            cd /home/etb/efir
+
+            # Generate timestamp for the backup filename (e.g., db_backup_2026-09-30_14-07.json)
+            TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
+            BACKUP_FILE="./backups/github_db_backup_${TIMESTAMP}.json"
+
+            echo "Creating database backup to ${BACKUP_FILE}..."
+
+            # Execute dumpdata inside the running 'app' container
+            docker compose exec -T app python ./efir/manage.py dumpdata \
+              --exclude auth.permission \
+              --exclude contenttypes \
+              --format=json \
+              --indent 2 \
+              --verbosity 3 > "${BACKUP_FILE}"
+
+            echo "Backup successfully created."
+
+            # Pull the latest code from the repository
+            git pull origin main
+
+            # Rebuild and restart Docker containers
+            docker compose down
+            docker compose up -d --build
+
+            # Clean up unused Docker images and cache
+            docker image prune -f
