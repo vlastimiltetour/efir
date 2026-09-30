@@ -27,6 +27,7 @@
    font-size: 0.8rem;
    width: 30px; /* Adjust the width as needed */
    text-align: center;
+   border-radius: 0px;
    border: none; /* Add black square border */
    }
    select {
@@ -38,6 +39,7 @@
   background-color: transparent;
   font-size: 16px;
   width: 42px;
+  border-radius: 0px;
   justify-content: center;
   align-items: center;
 }
@@ -416,7 +418,7 @@
                <ul>
                   <li>
                      <label for="kalhotky-select">Velikost kalhotek:</label>
-                     <select id="kalhotky_velikost_set" name="kalhotky_velikost_set" style="text-align: center;"> <!-- id has to be same as varible in django view  -->
+                     <select id="kalhotky_velikost_set" name="kalhotky_velikost_set" style="-webkit-appearance: none !important; -moz-appearance: none !important; appearance: none !important; text-align: center !important; text-align-last: center !important; width: 42px; border: 1px solid black; border-radius: 0px; background: transparent; padding: 0;"> <!-- id has to be same as varible in django view  -->
                      {% for kalhotky_velikost_set_size in form.kalhotky_velikost_set %}
                      {{ kalhotky_velikost_set_size }}
                      {% endfor %}
@@ -424,7 +426,7 @@
                   </li>
                   <li>
                      <label for="podprsenky-select">Velikost podprsenky:</label>
-                     <select id="podprsenka_velikost_set" name="podprsenka_velikost_set" style="text-align: center;">
+                     <select id="podprsenka_velikost_set" name="podprsenka_velikost_set" style="-webkit-appearance: none !important; -moz-appearance: none !important; appearance: none !important; text-align: center !important; text-align-last: center !important; width: 42px; border: 1px solid black; border-radius: 0px; background: transparent; padding: 0;">
                         {% for podprsenka_velikost_set_size in form.podprsenka_velikost_set %}
                         {{ podprsenka_velikost_set_size }}
                         {% endfor %}
@@ -432,7 +434,7 @@
                   </li>
                   <li>
                      <label for="pas-select">Velikost pasu:</label>
-                     <select id="pas_velikost_set" name="pas_velikost_set" style="text-align: center;">
+                     <select id="pas_velikost_set" name="pas_velikost_set" style="-webkit-appearance: none !important; -moz-appearance: none !important; appearance: none !important; text-align: center !important; text-align-last: center !important; width: 42px; border: 1px solid black; border-radius: 0px; background: transparent; padding: 0;">
                         {% for pas_velikost_set_size in form.pas_velikost_set %}
                         {{ pas_velikost_set_size }}
                         {% endfor %}
@@ -577,7 +579,8 @@
                               /* Style for iOS */
                               @media only screen and (max-device-width: 480px) {
                                 select {
-                                  color: black !important; /* Set the desired color for iOS */
+                                  color: black !important;
+                                  border-radius: 0px; /* Set the desired color for iOS */
                                 }
                               }
                             </style>
