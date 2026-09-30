@@ -3,6 +3,7 @@ name: Deploy to DigitalOcean
 on:
   push:
     branches:
+      - main
       - master
 
 jobs:
@@ -26,9 +27,9 @@ jobs:
             # Navigate to the project directory
             cd /home/etb/efir
 
-            # Generate timestamp for the backup filename (e.g., db_backup_2026-09-30_14-07.json)
+            # Generate timestamp for the backup filename
             TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
-            BACKUP_FILE="./backups/github_db_backup_${TIMESTAMP}.json"
+            BACKUP_FILE="./backups/db_backup_${TIMESTAMP}.json"
 
             echo "Creating database backup to ${BACKUP_FILE}..."
 
