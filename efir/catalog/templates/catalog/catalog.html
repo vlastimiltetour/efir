@@ -3,6 +3,12 @@
 {% load humanize %}
 {% load i18n %}
 
+{% block extra_css %}
+    {{ block.super }}
+      <link href='{% static "css/catalog-filters.css" %}' rel="stylesheet" /> <!-- Importing CSS styling-->
+{% endblock %}
+
+
 {% block content %}
 <!--Intro, Header Jumbotron --> 
 <!-- link here: https://getbootstrap.com/docs/5.3/examples/jumbotron/ -->
@@ -39,6 +45,72 @@
         <h1 class="jumbotron-heading mt-5 mb-5">Katalog
         {% endif %}</h1>
     </div>
+
+    <!-- Beginning New Updated Filters 2026 -->
+     <aside id="filter-panel"
+       class="filter-panel"
+       aria-hidden="true"
+       inert>
+
+    <div class="filter-header">
+        <h2>Filtry</h2>
+        <button id="close-filters"
+                type="button"
+                aria-label="Zavřít filtry">✕</button>
+    </div>
+
+    <label for="search">Hledat produkt</label>
+    <input id="search"
+           type="search"
+           placeholder="Název produktu">
+
+    <label for="category">Kategorie</label>
+    <select id="category">
+        <option value="">Všechny kategorie</option>
+
+        {% for category in categories %}
+            <option value="{{ category.slug }}">
+                {{ category.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <fieldset>
+        <legend>Značka</legend>
+
+        {% for brand in brands %}
+            <label class="checkbox">
+                <input type="checkbox"
+                       class="brand-filter"
+                       value="{{ brand.slug }}">
+                {{ brand.name }}
+            </label>
+        {% endfor %}
+    </fieldset>
+
+    <fieldset>
+        <legend>Cena v Kč</legend>
+
+        <label for="min-price">Od</label>
+        <input id="min-price"
+               type="number"
+               min="0"
+               step="0.01"
+               placeholder="0">
+
+        <label for="max-price">Do</label>
+        <input id="max-price"
+               type="number"
+               min="0"
+               step="0.01"
+               placeholder="Bez limitu">
+    </fieldset>
+
+    <button id="reset-filters" type="button">
+        Vymazat filtry
+    </button>
+</aside>
+     <!-- End Updated Filters 2026-->
 
  <!-- start of other filter dropdowns as needed -->
 <div class="filters">
