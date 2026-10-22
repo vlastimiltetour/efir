@@ -5,9 +5,12 @@
 
 {% block extra_css %}
     {{ block.super }}
-      <link href='{% static "css/catalog-filters.css" %}' rel="stylesheet" /> <!-- Importing CSS styling-->
+     <link href='{% static "css/catalog-filters.css" %}' rel="stylesheet" /> <!-- Importing CSS styling-->
 {% endblock %}
-
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'js/catalog-filters.js' %}" defer></script>
+{% endblock %}
 
 {% block content %}
 <!--Intro, Header Jumbotron --> 
@@ -45,7 +48,15 @@
         <h1 class="jumbotron-heading mt-5 mb-5">Katalog
         {% endif %}</h1>
     </div>
+<div class="filters">
+    <button id="open-filters"
+            type="button"
+            aria-controls="filter-panel"
+            aria-expanded="false">
+        ☰ Filtry
+    </button>
 
+    
     <!-- Beginning New Updated Filters 2026 -->
      <aside id="filter-panel"
        class="filter-panel"
@@ -59,10 +70,20 @@
                 aria-label="Zavřít filtry">✕</button>
     </div>
 
-    <label for="search">Hledat produkt</label>
-    <input id="search"
-           type="search"
-           placeholder="Název produktu">
+
+    <div id="result-count"></div>
+    <br>
+
+
+    <label>Uspořádat podle</label>
+    <select id="sortBy">
+        <option value="default">Bez filtru</option>
+        <option value="price-asc">Od nejlevnějšího</option>
+        <option value="price-dsc">Od nejdražšího</option>
+        <option value="pr-age">Nejnovější</option>
+
+    </select>
+
 
     <label for="category">Kategorie</label>
     <select id="category">
@@ -75,35 +96,23 @@
         {% endfor %}
     </select>
 
-    <fieldset>
-        <legend>Značka</legend>
-
-        {% for brand in brands %}
-            <label class="checkbox">
-                <input type="checkbox"
-                       class="brand-filter"
-                       value="{{ brand.slug }}">
-                {{ brand.name }}
-            </label>
-        {% endfor %}
+    
+    <fieldset> 
+      <label>Střih</label>
+      {% for cut_value in filter_form.cut_selection %} 
+      <label class="checkbox"> 
+        {{ cut_value.tag }} 
+        {{ cut_value.choice_label }} 
+      </label> {% endfor %} 
     </fieldset>
 
-    <fieldset>
-        <legend>Cena v Kč</legend>
-
-        <label for="min-price">Od</label>
-        <input id="min-price"
-               type="number"
-               min="0"
-               step="0.01"
-               placeholder="0">
-
-        <label for="max-price">Do</label>
-        <input id="max-price"
-               type="number"
-               min="0"
-               step="0.01"
-               placeholder="Bez limitu">
+    <fieldset> 
+      <label>Velikost</label>
+      {% for size_value in filter_form.size_selection %}
+      <label class="checkbox"> 
+        {{ size_value.tag }} 
+        {{ size_value.choice_label }} 
+      </label> {% endfor %} 
     </fieldset>
 
     <button id="reset-filters" type="button">
@@ -113,7 +122,7 @@
      <!-- End Updated Filters 2026-->
 
  <!-- start of other filter dropdowns as needed -->
-<div class="filters">
+
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script>
      $(document).ready(function() {
@@ -266,9 +275,10 @@
         {% for product in products %} 
         
         <!-- Single Product -->
-        <div class="col-md-4 mb-4">
+        <div id="product-card" class="col-md-4 mb-4">
           <a href="{{ product.get_absolute_url }}">
             <div class="product-image-container">
+              <div style="display: none" id="product-age">{{product.created}}</div>
 
 
               <div class="card mb-2 box-shadow">
@@ -314,17 +324,19 @@
               </div>
             {% endwith %}
             <div class="card-body d-flex flex-column" style="padding: 1rem;">
-              <h5 class="fw-bolder"> {{ product.name }}</h5>
+              <h5 id="product-name" class="fw-bolder"> {{ product.name }}</h5>
             
-              <p class="card-text">{{ product.short_description }}</p>    
+              <p id="product-cut" class="card-text">{{ product.short_description }}</p>
+              <p id="product-category" style="display: none;"> {{product.category.slug }} </p>
+              <p id="product-size" class="card-text">{{ product.get_available_sizes }}</p>
+              
                           
-            
-             
+
                   {% if product.discount %}
-                  <div><b class="fw-semibold"><del>{{ product.price }} Kč</del></div>
+                  <div><b  id="product-price" class="fw-semibold"><del>{{ product.price }} Kč</del></div>
                     <div>{{ product.corrected_price }} Kč</div></b>
                   {% else %}
-                  <b class="fw-semibold">{{ product.price }} Kč</b>
+                  <b id="product-price" class="fw-semibold">{{ product.price }} Kč</b>
                   {% endif %}
 
                 
