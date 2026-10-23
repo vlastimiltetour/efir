@@ -48,7 +48,69 @@
         <h1 class="jumbotron-heading mt-5 mb-5">Katalog
         {% endif %}</h1>
     </div>
-<div class="filters">
+
+  <!-- start of other filter dropdowns as needed -->
+
+
+<!-- labels start labels start -->
+<div class="filters mb-5">
+  <form action="{% url 'catalog:delete_selected_filter' %}" method="post">
+      {% csrf_token %}
+
+      <ul class="nav justify-content-center flex-sm-row">
+          <!-- Sorting Label -->
+          {% if selected_sorting == "-created" %}
+          <li class="nav-item dropdown mt-2">
+              <input type="hidden" name="selected_filter" value="Nejnovejsi">
+          </li>
+        {% elif selected_sorting and selected_sorting != "Nejnovejsi" %}
+          <li class="nav-item dropdown mt-2">
+              <input type="hidden" name="selected_filter" value="{{ selected_sorting }}">
+              <button class="btn btn-light flex-shrink-0" id="selected_filter">
+                  {{ selected_sorting }} <i class="bi bi-x"></i>
+              </button>
+          </li>
+        {% endif %}
+        
+          
+          <!-- Category Label -->
+          {% if selected_category %}
+              <li class="nav-item dropdown mt-2">
+                  <input type="hidden" name="selected_filter" value="{{ selected_category }}">
+                  <button class="btn btn-light flex-shrink-0 rounded-0"  id="selected_filter">
+                      {{ selected_category }} <i class="bi bi-x"></i>
+                  </button>
+              </li>
+          {% endif %}
+          
+          <!-- Cuts Label -->
+          {% if selected_cuts %}
+              <li class="nav-item dropdown mt-2">
+                  <input type="hidden" name="selected_filter" value="{{ selected_cuts }}">
+                  <button class="btn btn-light flex-shrink-0 rounded-0"  id="selected_filter">
+                      {{ selected_cuts }} <i class="bi bi-x"></i>
+                  </button>
+              </li>
+          {% endif %}
+          
+          <!-- Sizes Label -->
+          {% if selected_sizes %}
+              <li class="nav-item dropdown mt-2">
+                  <input type="hidden" name="selected_filter" value="{{ selected_sizes }}">
+                  <button class="btn btn-light flex-shrink-0 rounded-0" id="selected_filter">
+                      {{ selected_sizes }} <i class="bi bi-x"></i>
+                  </button>
+              </li>
+          {% endif %}
+      </ul>
+  </form>
+</div>
+
+
+
+  <div class="album py-2 bg-white">
+    <div class="container justify-content-center align-items-center" style="min-height: 60vh;">
+      <div class="filters">
     
     <button id="open-filters"
             type="button"
@@ -120,7 +182,7 @@
     </fieldset>
 
      <fieldset> 
-      <label>Velikost</label>
+      <label>Barva</label>
       {% for size_value in filter_form.size_selection %}
       <label class="checkbox"> 
         {{ size_value.tag }} 
@@ -164,6 +226,7 @@
      white-space: nowrap; /* Prevent line breaks between elements white-space: nowrap;: This prevents line breaks between the form elements, ensuring that they stay on the same line.*/
      }
   </style>
+  <div id="filters2" style="display: none;">
      <div class="btn-group mt-2">
         <form action="{% url 'catalog:delete_all_filters' %}" method="post">
            {% csrf_token %}
@@ -220,67 +283,7 @@
         </div>
      </form>
 </div>
-  <!-- start of other filter dropdowns as needed -->
-
-
-<!-- labels start labels start -->
-<div class="filters mb-5">
-  <form action="{% url 'catalog:delete_selected_filter' %}" method="post">
-      {% csrf_token %}
-
-      <ul class="nav justify-content-center flex-sm-row">
-          <!-- Sorting Label -->
-          {% if selected_sorting == "-created" %}
-          <li class="nav-item dropdown mt-2">
-              <input type="hidden" name="selected_filter" value="Nejnovejsi">
-          </li>
-        {% elif selected_sorting and selected_sorting != "Nejnovejsi" %}
-          <li class="nav-item dropdown mt-2">
-              <input type="hidden" name="selected_filter" value="{{ selected_sorting }}">
-              <button class="btn btn-light flex-shrink-0" id="selected_filter">
-                  {{ selected_sorting }} <i class="bi bi-x"></i>
-              </button>
-          </li>
-        {% endif %}
-        
-          
-          <!-- Category Label -->
-          {% if selected_category %}
-              <li class="nav-item dropdown mt-2">
-                  <input type="hidden" name="selected_filter" value="{{ selected_category }}">
-                  <button class="btn btn-light flex-shrink-0 rounded-0"  id="selected_filter">
-                      {{ selected_category }} <i class="bi bi-x"></i>
-                  </button>
-              </li>
-          {% endif %}
-          
-          <!-- Cuts Label -->
-          {% if selected_cuts %}
-              <li class="nav-item dropdown mt-2">
-                  <input type="hidden" name="selected_filter" value="{{ selected_cuts }}">
-                  <button class="btn btn-light flex-shrink-0 rounded-0"  id="selected_filter">
-                      {{ selected_cuts }} <i class="bi bi-x"></i>
-                  </button>
-              </li>
-          {% endif %}
-          
-          <!-- Sizes Label -->
-          {% if selected_sizes %}
-              <li class="nav-item dropdown mt-2">
-                  <input type="hidden" name="selected_filter" value="{{ selected_sizes }}">
-                  <button class="btn btn-light flex-shrink-0 rounded-0" id="selected_filter">
-                      {{ selected_sizes }} <i class="bi bi-x"></i>
-                  </button>
-              </li>
-          {% endif %}
-      </ul>
-  </form>
 </div>
-
-
-
-  <div class="album py-2 bg-white">
-    <div class="container justify-content-center align-items-center" style="min-height: 60vh;">
       {% if products %}
       <div id="product-grid-container" class="row row-cols-2 row-cols-md-3 row-cols-lg-3">
 

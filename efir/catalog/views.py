@@ -143,27 +143,30 @@ def show_session_contents(request):
 
     print("")
     return "These were the session contents"
-from django.shortcuts import render, get_object_or_404
-from django.db.models import Q
-from django.template.loader import render_to_string
-from django.http import HttpResponse
 
-from .models import Category, Product
+
+from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
+
 from inventory.models import Inventory
+
 from .forms import FilterForm
+from .models import Category, Product
 
 
 def catalog_product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all().exclude(name="Dárkové certifikáty")
-    
+
     # Základní queryset (vyfiltrujeme aktivní bez dárkových certifikátů)
     products = (
         Product.objects.filter(active=True)
         .exclude(category__name="Dárkové certifikáty")
         .filter(discount__isnull=True)
     )
-    
+
     inventory = Inventory.objects.values("size").distinct().order_by("size")
     filter_form = FilterForm()
 
@@ -171,7 +174,9 @@ def catalog_product_list(request, category_slug=None):
     # getlist() načte pole hodnot (např. pro více zaškrtnutých velikostí nebo střihů)
     size_selection = request.GET.getlist("size")
     cut_selection = request.GET.getlist("cut")
-    zpusob_vyroby = request.GET.getlist("brand")  # nebo zpusob_vyroby podle vašich atributů
+    zpusob_vyroby = request.GET.getlist(
+        "brand"
+    )  # nebo zpusob_vyroby podle vašich atributů
     category_selection = request.GET.get("category")
     sort_by = request.GET.get("sort", "-created")  # Výchozí řazení od nejnovějších
 
@@ -191,9 +196,13 @@ def catalog_product_list(request, category_slug=None):
         cut_q = Q()
         for cut in cut_selection:
             if cut == "Brazilky":
-                cut_q |= (Q(short_description__iexact="Brazilky") & ~Q(short_description__iexact="Brazilky na gumičkách"))
+                cut_q |= Q(short_description__iexact="Brazilky") & ~Q(
+                    short_description__iexact="Brazilky na gumičkách"
+                )
             elif cut == "Podprsenka s kosticemi":
-                cut_q |= (Q(short_description__iexact="Podprsenka s kosticemi") & ~Q(short_description__iexact="Podprsenka s kosticemi a otevřeným košíčkem"))
+                cut_q |= Q(short_description__iexact="Podprsenka s kosticemi") & ~Q(
+                    short_description__iexact="Podprsenka s kosticemi a otevřeným košíčkem"
+                )
             elif cut == "Podvazkový pas s gumičkami":
                 cut_q |= Q(short_description__icontains=cut)
             else:
@@ -210,7 +219,6 @@ def catalog_product_list(request, category_slug=None):
 
     # Applikujeme filtry na queryset
 
-
     products = products.filter(query_filters).distinct()
 
     # 3. ŘAZENÍ
@@ -225,7 +233,7 @@ def catalog_product_list(request, category_slug=None):
     products = products.order_by(order_by_field)
 
     sum_of = products.count()
-    print('sum of', sum_of)
+    print("sum of", sum_of)
     context = {
         "category": category,
         "categories": categories,

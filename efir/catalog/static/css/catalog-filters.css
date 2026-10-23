@@ -34,6 +34,8 @@ button {
     font-size: 1.5rem;
 }
 
+
+
 #open-filters,
 #close-filters,
 #reset-filters {
@@ -41,6 +43,7 @@ button {
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
+    
 }
 
 .btn-filter-custom {
@@ -124,10 +127,6 @@ button {
     width: 100%;
     margin-bottom: 10px;
     
-}
-
-.filter-panel > label {
-    font-weight: 300;
 }
 
 .filter-panel > input,
