@@ -143,133 +143,110 @@ def show_session_contents(request):
 
     print("")
     return "These were the session contents"
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Q
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+
+from .models import Category, Product
+from inventory.models import Inventory
+from .forms import FilterForm
 
 
 def catalog_product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all().exclude(name="Dárkové certifikáty")
+    
+    # Základní queryset (vyfiltrujeme aktivní bez dárkových certifikátů)
     products = (
-        Product.objects.all()
+        Product.objects.filter(active=True)
         .exclude(category__name="Dárkové certifikáty")
-        .order_by("created")
         .filter(discount__isnull=True)
     )
+    
     inventory = Inventory.objects.values("size").distinct().order_by("size")
-
     filter_form = FilterForm()
 
-    zpusob_vyroby_session = request.session.get("zpusob_vyroby_session", [])
-    size_selection_session = request.session.get("size_selection_session", [])
-    sort_by_price_session = request.session.get(
-        "sort_by_price_session", "-created"
-    )  # Set default here
-    cut_selection_session = request.session.get("cut_selection_session", [])
-    category_session = request.session.get("category_session", [])
+    # 1. ČTENÍ PARAMETRŮ Z URL (request.GET)
+    # getlist() načte pole hodnot (např. pro více zaškrtnutých velikostí nebo střihů)
+    size_selection = request.GET.getlist("size")
+    cut_selection = request.GET.getlist("cut")
+    zpusob_vyroby = request.GET.getlist("brand")  # nebo zpusob_vyroby podle vašich atributů
+    category_selection = request.GET.get("category")
+    sort_by = request.GET.get("sort", "-created")  # Výchozí řazení od nejnovějších
 
-    # these are session contents
-    # print(show_session_contents(request))
-
+    # 2. SESTAVENÍ FILTER QUERIES (Django ORM Q-objects)
     query_filters = Q()
-    # Replace "created" with "-created" if necessary
-    if sort_by_price_session == "created":
-        sort_by_price_session = "-created"
-    print(request.session.items())  # Add this line to inspect session data
 
-    if category_session:
-        query_filters &= Q(category__name=category_session[0])
-
-    if cut_selection_session:
-        new_value = cut_selection_session[-1]
-        cut_selection_session = []
-        cut_selection_session = new_value
-
-        print(type(cut_selection_session))
-        if type(cut_selection_session) == str:
-            print("type 1")
-            if cut_selection_session == "Brazilky":
-                # Filter for products containing "Brazilky" but exclude those containing "Brazilky na gumičkách"
-                query_filters &= Q(short_description__iexact="Brazilky")
-                query_filters &= ~Q(short_description__iexact="Brazilky na gumičkách")
-                print("type 2")
-            elif cut_selection_session == "Podprsenka s kosticemi":
-                # Filter for products containing "Brazilky" but exclude those containing "Brazilky na gumičkách"
-                query_filters &= Q(short_description__iexact="Podprsenka s kosticemi")
-                query_filters &= ~Q(
-                    short_description__iexact="Podprsenka s kosticemi a otevřeným košíčkem"
-                )
-                print("type 3")
-
-            elif cut_selection_session == "Podvazkový pas s gumičkami":
-                # Filter for products containing "Brazilky" but exclude those containing "Brazilky na gumičkách"
-                query_filters &= Q(short_description__icontains=cut_selection_session)
-
-                print("type 6")
-
-            else:
-                query_filters &= Q(short_description__iexact=cut_selection_session)
-                print("type 4")
-        else:
-            print("type 5")
-            pass
-
-    if zpusob_vyroby_session:
-        query_filters &= Q(
-            zpusob_vyroby__size=zpusob_vyroby_session[0]
-        )  # Assuming zpusob_vyroby is a list
-
-    if size_selection_session:
-        query_filters &= Q(inventory__size__in=size_selection_session)
-
-    if sort_by_price_session == ([] or None):
-        sort_by_price_session = "-created"
-    elif type(sort_by_price_session) == str:
-        sort_by_price_session = sort_by_price_session
-
+    # Kategórie z URL slugu nebo z GET parametru
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
+        query_filters &= Q(category=category)
+    elif category_selection:
+        query_filters &= Q(category__name=category_selection)
 
-        products = (
-            products.filter(category=category)
-            .exclude(category__name="Dárkové certifikáty")
-            .filter(query_filters)
-            .order_by(sort_by_price_session)
-        )
+    # Střih (Cut)
+    if cut_selection:
+        # Pokud přišlo více střihů, použijeme __in
+        cut_q = Q()
+        for cut in cut_selection:
+            if cut == "Brazilky":
+                cut_q |= (Q(short_description__iexact="Brazilky") & ~Q(short_description__iexact="Brazilky na gumičkách"))
+            elif cut == "Podprsenka s kosticemi":
+                cut_q |= (Q(short_description__iexact="Podprsenka s kosticemi") & ~Q(short_description__iexact="Podprsenka s kosticemi a otevřeným košíčkem"))
+            elif cut == "Podvazkový pas s gumičkami":
+                cut_q |= Q(short_description__icontains=cut)
+            else:
+                cut_q |= Q(short_description__iexact=cut)
+        query_filters &= cut_q
 
-    else:
-        products = (
-            Product.objects.filter(query_filters)
-            .exclude(category__name="Dárkové certifikáty")
-            .order_by(sort_by_price_session)
-            .filter(active=True)
-            .filter(discount__isnull=True)
-        )
+    # Způsob výroby / Značka
+    if zpusob_vyroby:
+        query_filters &= Q(zpusob_vyroby__size__in=zpusob_vyroby)
 
-    sum_of = len(products)
+    # Velikosti
+    if size_selection:
+        query_filters &= Q(inventory__size__in=size_selection)
+
+    # Applikujeme filtry na queryset
+
+
+    products = products.filter(query_filters).distinct()
+
+    # 3. ŘAZENÍ
+    valid_sort_options = {
+        "price-asc": "price",
+        "price-dsc": "-price",
+        "name-asc": "name",
+        "name-dsc": "-name",
+        "newest": "-created",
+    }
+    order_by_field = valid_sort_options.get(sort_by, "-created")
+    products = products.order_by(order_by_field)
+
+    sum_of = products.count()
     print('sum of', sum_of)
+    context = {
+        "category": category,
+        "categories": categories,
+        "products": products,
+        "inventory": inventory,
+        "filter_form": filter_form,
+        "sum_of": sum_of,
+        "selected_category": category_selection,
+        "selected_sizes": size_selection,
+        "selected_cuts": cut_selection,
+        "selected_sort": sort_by,
+    }
 
-    selected_sizes = clean_session_names(size_selection_session)
-    selected_zpubob_vyroby = clean_session_names(zpusob_vyroby_session)
-    selected_sorting = clean_session_names(sort_by_price_session)
-    selected_cuts = clean_session_names(cut_selection_session)
-    selected_category = clean_session_names(category_session)
+    # 4. RESPONSE LOGIKA (AJAX / HTML Fragment vs. Celá stránka)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        # Pokud JS volá fetch, vrátíme jen vnitřní mřížku produktů
+        html = render_to_string("catalog/catalog.html", context, request=request)
+        return HttpResponse(html)
 
-    return render(
-        request,
-        "catalog/catalog.html",
-        {
-            "category": category,
-            "categories": categories,
-            "products": products,
-            "inventory": inventory,
-            "filter_form": filter_form,
-            "selected_sizes": selected_sizes,
-            "selected_zpubob_vyroby": selected_zpubob_vyroby,
-            "selected_sorting": selected_sorting,
-            "selected_cuts": selected_cuts,
-            "selected_category": selected_category,
-            "sum_of": sum_of,
-        },
-    )
+    # Jinak vrátíme celou stránku (např. první načtení webu)
+    return render(request, "catalog/catalog.html", context)
 
 
 def clean_session_names(session_values):
@@ -367,7 +344,7 @@ def product_detail(
         if list_of_recommended:
             recommended = Product.objects.filter(id__in=list_of_recommended)
             recommended = recommended[:5]
-            recommended = [] # TODO tady je to vypnute
+            recommended = []  # TODO tady je to vypnute
     except ValueError:
         recommended = []
     except TypeError:
@@ -506,16 +483,16 @@ def recommended_products(product_id):
 
 def akce(request, token):
     if token == "aB3nK8mPq2":
-
         products = Product.objects.all().filter(active=True)
         discounted = Product.objects.exclude(discount__isnull=True).filter(active=True)
 
         print("these are akce discounts:", discounted)
 
         return render(
-            request, "catalog/akce.html", {"products": products, "discounted": discounted}
+            request,
+            "catalog/akce.html",
+            {"products": products, "discounted": discounted},
         )
-
 
 
 def discover_your_set(request):
