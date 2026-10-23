@@ -36,7 +36,16 @@ button {
 
 
 
-#open-filters,
+#open-filters {
+    padding: 10px 14px;
+    background: white;
+    border-radius: 8px;
+    text-align: left !important;
+    display: flex;
+    justify-content: flex-start !important;
+}
+
+
 #close-filters,
 #reset-filters {
     padding: 10px 14px;

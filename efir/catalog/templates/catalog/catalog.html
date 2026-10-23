@@ -43,9 +43,9 @@
 <!-- Catalog of Products -->
   <section class="jumbotron text-center">
     <div class="container">
-      <h1 class="jumbotron-heading mt-5 mb-5">{% if category %}{{category}} </h1>
+      <h1 class="jumbotron-heading mt-5">{% if category %}{{category}} </h1>
         {% else %}
-        <h1 class="jumbotron-heading mt-5 mb-5">Katalog
+        <h1 class="jumbotron-heading mt-5">Katalog
         {% endif %}</h1>
     </div>
 
@@ -53,7 +53,7 @@
 
 
 <!-- labels start labels start -->
-<div class="filters mb-5">
+<div class="filters">
   <form action="{% url 'catalog:delete_selected_filter' %}" method="post">
       {% csrf_token %}
 
@@ -344,7 +344,8 @@
             
               <p id="product-cut" class="card-text">{{ product.short_description }}</p>
               <p id="product-category" style="display: none;"> {{product.category.slug }} </p>
-              <p id="product-size" class="card-text">{{ product.get_available_sizes }}</p>
+              <p id="product-size" class="card-text" style="visibility: hidden; opacity: 0;">{{ product.get_available_sizes }}</p>
+              <p class="card" data-sizes="{{ product.get_available_sizes }}"></p> # TODO
               
                           
 
