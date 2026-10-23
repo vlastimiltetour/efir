@@ -43,6 +43,27 @@ button {
     border-radius: 8px;
 }
 
+.btn-filter-custom {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: #333; /* Upravte barvu podle svého webu */
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; /* Mezera mezi slovem, číslem a pluskem */
+}
+
+.btn-filter-custom:hover {
+    opacity: 0.7;
+}
+
+.filter-plus {
+    font-weight: 350; /* Tenčí nebo tlustší plusko podle vkusu */
+    font-size: 1.3rem;
+    line-height: 1;
+}
 .main {
     padding: 24px 4%;
 }
@@ -102,6 +123,11 @@ button {
     display: block;
     width: 100%;
     margin-bottom: 10px;
+    
+}
+
+.filter-panel > label {
+    font-weight: 300;
 }
 
 .filter-panel > input,
