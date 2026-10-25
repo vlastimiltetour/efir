@@ -82,59 +82,6 @@ def home(request, category_slug=None):
     )
 
 
-def save_filters(request, category_slug=None):
-    if request.method == "POST":
-        filter_form = FilterForm(request.POST)
-        # print(request.POST)  # Print the entire POST data for debugging
-
-        if filter_form.is_valid():
-            cd = filter_form.cleaned_data
-
-            # these values are lists, wtf
-            zpusob_vyroby = cd["zpusob_vyroby"]
-            sort_by_price = cd["sort_by_price"]
-            size_selection = cd["size_selection"]
-            cut_selection = cd["cut_selection"]
-            category_selection = cd["category_selection"]
-
-            if category_selection != []:
-                request.session["category_session"] = category_selection
-
-            if zpusob_vyroby != []:
-                request.session["zpusob_vyroby_session"] = zpusob_vyroby
-
-            if sort_by_price != []:
-                for value in sort_by_price:
-                    request.session["sort_by_price_session"] = value
-
-            if "size_selection_session" not in request.session:
-                request.session["size_selection_session"] = []
-
-            if size_selection:
-                for val in size_selection:
-                    if val not in request.session["size_selection_session"]:
-                        request.session["size_selection_session"].append(val)
-                        request.session.save()
-
-            if "cut_selection_session" not in request.session:
-                request.session["cut_selection_session"] = []
-
-            # this is cut selection which allows more than 1
-            # if cut_selection:
-            #    for x in cut_selection:
-            #        if x not in request.session["cut_selection_session"]:
-            #            request.session["cut_selection_session"].append(x)
-            #            request.session.save()
-
-            # this is cut selection which allows only 1 value
-            if cut_selection:
-                for cut in cut_selection:
-                    request.session["cut_selection_session"].append(cut)
-                    request.session.save()
-
-    return redirect("catalog:katalog_vse")
-
-
 def show_session_contents(request):
     print("")
     print("Session Contents:")
@@ -255,77 +202,6 @@ def catalog_product_list(request, category_slug=None):
 
     # Jinak vrátíme celou stránku (např. první načtení webu)
     return render(request, "catalog/catalog.html", context)
-
-
-def clean_session_names(session_values):
-    clean_translation_dict = {
-        "price": "Cena vzestupně",
-        "-price": "Cena sestupně",
-        "name": "Název A-Z",
-        "-name": "Název Z-A",
-        "created": "Nejnovější",
-    }
-
-    for key in clean_translation_dict:
-        if key == session_values:
-            session_values = clean_translation_dict[key]
-
-    return (
-        str(session_values)
-        .replace("'", "")
-        .replace("[", "")
-        .replace("]", "")
-        .replace("[", "")
-        .replace("]", "")
-    )
-
-
-def delete_all_filters(request):
-    if request.method == "POST":
-        print("Before Deletion:", request.session.items())
-
-        to_delete = [
-            "size_selection_session",
-            "cut_selection_session",
-            "category_session",
-        ]
-        for key in to_delete:
-            if key in request.session:
-                del request.session[key]
-
-        if "sort_by_price_session" in request.session:
-            request.session["sort_by_price_session"] = "created"
-
-        print("After Deletion:", request.session.items())
-
-    return redirect("catalog:katalog_vse")
-
-
-def delete_selected_filter(request):
-    if request.method == "POST":
-        clean_translation_dict = {
-            "Cena vzestupně": "price",
-            "Cena sestupně": "-price",
-            "Název A-Z": "name",
-            "Název Z-A": "-name",
-        }
-
-        selected_filter = request.POST.get("selected_filter")
-
-        if selected_filter in clean_translation_dict:
-            selected_filter = clean_translation_dict[selected_filter]
-            if "sort_by_price_session" in request.session:
-                request.session["sort_by_price_session"] = "-created"
-
-        for session_key, session_value in request.session.items():
-            if isinstance(session_value, (list, str)):
-                if selected_filter in session_value:
-                    print("session_key", session_key)
-                    print("selected filter:", selected_filter)
-
-        del request.session[session_key]
-
-    return redirect("catalog:katalog_vse")
 
 
 def product_detail(
