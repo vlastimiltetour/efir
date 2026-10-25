@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Příklad správného navázání – každý prvek musí volat filterProducts()
     if (sortBy) {
         sortBy.addEventListener("change", () => {
-            console.log("Mění se řazení...");
+            
             filterProducts(); // TADY SE TO SPUSTÍ
         });
     }
@@ -114,12 +114,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cutOptions.forEach(input => {
         input.addEventListener("change", () => {
+            console.log("Mění se strih...");
             filterProducts();
         });
     });
 
     sizeOptions.forEach(input => {
         input.addEventListener("change", () => {
+            console.log("Mění se velikost...");
             filterProducts();
         });
     });

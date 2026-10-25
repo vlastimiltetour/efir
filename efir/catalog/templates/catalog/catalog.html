@@ -183,11 +183,7 @@
 
      <fieldset> 
       <label>Barva</label>
-      {% for size_value in filter_form.size_selection %}
-      <label class="checkbox"> 
-        {{ size_value.tag }} 
-        {{ size_value.choice_label }} 
-      </label> {% endfor %} 
+   
     </fieldset>
 
     <button id="reset-filters" type="button">

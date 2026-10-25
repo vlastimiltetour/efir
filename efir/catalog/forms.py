@@ -107,13 +107,13 @@ class FilterForm(forms.Form):
             categories = categories.values_list("name").distinct()
             categories = [name[0].strip("()") for name in categories]
             categories = [(i, i) for i in categories]
-            print('cateogires', categories)
+            print("cateogires", categories)
         except ValueError as e:
-            print('error type of e', e)
+            print("error type of e", e)
             categories = []
 
         self.fields["size_selection"] = forms.MultipleChoiceField(
-            widget=forms.CheckboxSelectMultiple,
+            widget=forms.CheckboxSelectMultiple(attrs={'class': 'size-options'}),
             choices=size_choices,
             label="Velikost",
             required=False,
@@ -134,7 +134,7 @@ class FilterForm(forms.Form):
         )
 
         self.fields["cut_selection"] = forms.MultipleChoiceField(
-            widget=forms.CheckboxSelectMultiple,
+            widget=forms.CheckboxSelectMultiple(attrs={'class': 'cut-options'}),
             choices=self.cut_choices_manual,
             label="Volba střihu",
             required=False,
@@ -146,6 +146,7 @@ class FilterForm(forms.Form):
             label="Volba kategorie",
             required=False,
         )
+
 
 class CreateSetForm(forms.Form):
     # captcha = ReCaptchaField()
