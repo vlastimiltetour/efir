@@ -115,10 +115,8 @@ def catalog_product_list(request, category_slug=None):
     )
 
     inventory = Inventory.objects.values("size").distinct().order_by("size")
-    filter_form = FilterForm()
+    filter_form = FilterForm(request.GET or None)
 
-    # 1. ČTENÍ PARAMETRŮ Z URL (request.GET)
-    # getlist() načte pole hodnot (např. pro více zaškrtnutých velikostí nebo střihů)
     size_selection = request.GET.getlist("size")
     cut_selection = request.GET.getlist("cut")
     zpusob_vyroby = request.GET.getlist(
@@ -127,10 +125,8 @@ def catalog_product_list(request, category_slug=None):
     category_selection = request.GET.get("category")
     sort_by = request.GET.get("sort", "-created")  # Výchozí řazení od nejnovějších
 
-    # 2. SESTAVENÍ FILTER QUERIES (Django ORM Q-objects)
     query_filters = Q()
 
-    # Kategórie z URL slugu nebo z GET parametru
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         query_filters &= Q(category=category)
@@ -180,7 +176,7 @@ def catalog_product_list(request, category_slug=None):
     products = products.order_by(order_by_field)
 
     sum_of = products.count()
-    print("sum of", sum_of)
+
     context = {
         "category": category,
         "categories": categories,

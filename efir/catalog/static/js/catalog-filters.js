@@ -4,18 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const openButton = document.getElementById("open-filters");
     const closeButton = document.getElementById("close-filters");
 
-    const category = document.getElementById("category");
-    const sortBy = document.getElementById("sortBy");
-
-    const cutOptions = [
-        ...document.querySelectorAll(".cut-options") // 1. nabrat hodnoty z forms.py
-    ]
-    const sizeOptions = [
-        ...document.querySelectorAll(".size-options")
-    ]
-
+  
     const resetButton = document.getElementById("reset-filters");
     const productGridContainer = document.getElementById("product-grid-container");
+
 
     function setPanelOpen(open) {
         console.log('panel is open')
@@ -49,26 +41,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     async function filterProducts() {
+          //const category = document.getElementById("category");
+        const sortBy = document.getElementById("sortBy");
+
+        const categoryOptions = [
+            ...document.querySelectorAll(".category-options")
+        ]
+            
+        const cutOptions = [
+            ...document.querySelectorAll(".cut-options") // 1. nabrat hodnoty z forms.py
+        ]
+        const sizeOptions = [
+            ...document.querySelectorAll(".size-options")
+        ]
+
         const params = new URLSearchParams();
 
-        if (category && category.value) {
-            // Převede první písmeno na velké, zbytek nechá netknutý
-            const formattedCategory = category.value.charAt(0).toUpperCase() + category.value.slice(1);
-            params.append("category", formattedCategory);
-        }
         if (sortBy && sortBy.value) {
             params.append("sort", sortBy.value);
         }
 
         // Pro každý zaškrtnutý prvek přidáme hodnotu
+        categoryOptions.filter(input => input.checked).forEach(input => params.append("category", input.value));
         cutOptions.filter(input => input.checked).forEach(input => params.append("cut", input.value));
         sizeOptions.filter(input => input.checked).forEach(input => params.append("size", input.value));
         
 
         // Sestavíme novou URL (např. /katalog/?category=Sety&cut=Brazilky)
         const newUrl = `${window.location.pathname}?${params.toString()}`;
-
-        console.log('new url', newUrl)
 
         try {
                 const response = await fetch(newUrl, {
@@ -86,9 +86,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Najdeme mřížku uvnitř té stáhnuté stránky
                 const newGrid = doc.getElementById("product-grid-container");
 
+
+                const newSizeGroup = doc.getElementById("size-group");
+                const newCutGroup = doc.getElementById("cut-group");
+                const newCategoryGroup = doc.getElementById("category-group");
+
                 if (newGrid && productGridContainer) {
                     // Vyměníme obsah
                     productGridContainer.innerHTML = newGrid.innerHTML;
+                }
+
+                if (newSizeGroup) {
+                    document.getElementById("size-group").innerHTML = newSizeGroup.innerHTML;
+                }
+
+                if (newCutGroup) {
+                    document.getElementById("cut-group").innerHTML = newCutGroup.innerHTML;
+                }
+
+                if (newCategoryGroup) {
+                    document.getElementById("category-group").innerHTML = newCategoryGroup.innerHTML;
                 }
 
                 window.history.pushState({}, "", newUrl);
@@ -99,49 +116,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Příklad správného navázání – každý prvek musí volat filterProducts()
-    if (sortBy) {
-        sortBy.addEventListener("change", () => {
-            
-            filterProducts(); // TADY SE TO SPUSTÍ
-        });
-    }
-
-    if (category) {
-        category.addEventListener("change", () => {
+    document.addEventListener("change", (event) => {
+        if (event.target.matches("#filter-panel select, #filter-panel input")) {
             filterProducts();
-        });
-    }
-
-    cutOptions.forEach(input => {
-        input.addEventListener("change", () => {
-            console.log("Mění se strih...");
-            filterProducts();
-        });
-    });
-
-    sizeOptions.forEach(input => {
-        input.addEventListener("change", () => {
-            console.log("Mění se velikost...");
-            filterProducts();
-        });
+        }
     });
 
   
    
-    resetButton.addEventListener("click", () => {
-        category.value = "";
-        cutOptions.forEach((input) => {
-            input.checked = false;
-        })
-        sizeOptions.forEach((input) => {
-            input.checked = false;
-        });
-        
+    document.addEventListener("click", (event) => {
+    if (event.target.closest("#reset-filters")) {
+        event.preventDefault();
+
+        const sortBy = document.getElementById("sortBy");
+
         if (sortBy) sortBy.value = "default";
 
+        document.querySelectorAll(".cut-options, .size-options, .category-options").forEach(input => {
+            input.checked = false;
+        });
 
         filterProducts();
-    });
+    }
+});
+  filterProducts();
 
-    filterProducts();
 });

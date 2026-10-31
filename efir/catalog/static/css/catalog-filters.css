@@ -155,6 +155,7 @@ button {
 .checkbox {
     display: flex;
     align-items: center;
+    text-align: left;
     gap: 10px;
     margin: 10px 0;
 }

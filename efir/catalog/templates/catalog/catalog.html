@@ -95,31 +95,28 @@
 
     </select>
 
-
-    <label for="category">Kategorie</label>
-    <select id="category">
-        <option value="">Všechny kategorie</option>
-
-        {% for category in categories %}
-            <option value="{{ category.slug }}">
-                {{ category.name }}
-            </option>
-        {% endfor %}
-    </select>
+    <fieldset id="category-group"> 
+      <label>Kategorie</label>
+      {% for cat_value in filter_form.category %} 
+      <label class="checkbox"> 
+        {{ cat_value.tag }} 
+        {{ cat_value.choice_label }} 
+      </label> {% endfor %} 
+    </fieldset>
 
     
-    <fieldset> 
+    <fieldset id="cut-group"> 
       <label>Střih</label>
-      {% for cut_value in filter_form.cut_selection %} 
+      {% for cut_value in filter_form.cut %} 
       <label class="checkbox"> 
         {{ cut_value.tag }} 
         {{ cut_value.choice_label }} 
       </label> {% endfor %} 
     </fieldset>
 
-    <fieldset> 
+    <fieldset id="size-group"> 
       <label>Velikost</label>
-      {% for size_value in filter_form.size_selection %}
+      {% for size_value in filter_form.size %}
       <label class="checkbox"> 
         {{ size_value.tag }} 
         {{ size_value.choice_label }} 
@@ -138,28 +135,6 @@
      <!-- End Updated Filters 2026-->
 
  <!-- start of other filter dropdowns as needed -->
-
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  <script>
-     $(document).ready(function() {
-       // Event handler for changes in dropdowns
-       $('.dropdown-item').click(function() {
-         // Find the closest parent with class 'btn-group'
-         var parentBtnGroup = $(this).closest('.btn-group');
-     
-         // Find the dropdown toggle within the 'btn-group'
-         var dropdownToggle = parentBtnGroup.find('.dropdown-toggle');
-     
-         // Get the id attribute of the dropdown toggle
-         var dropdownId = dropdownToggle.attr('id');
-     
-         // Set the value of the dropdown to the selected item's text
-         $('#' + dropdownId).val($(this).text());
-     
-         // Submit the form with id 'save_filters'
-         $('#save_filters').submit();
-       });
-     });
   </script>
   <style>
      #save_filters {
@@ -228,7 +203,7 @@
             
               <p id="product-cut" class="card-text">{{ product.short_description }}</p>
               <p id="product-category" style="display: none;"> {{product.category.slug }} </p>
-              <p id="product-size" class="card-text" style="visibility: hidden; opacity: 0;">{{ product.get_available_sizes }}</p>
+              <p id="product-size" class="card-text" style="display: none;">{{ product.get_available_sizes }}</p>
               
               
                           
