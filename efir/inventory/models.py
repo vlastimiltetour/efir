@@ -7,8 +7,9 @@ class Inventory(models.Model):
         related_name="inventory",
         on_delete=models.CASCADE,
     )  # one to one relationship, each product has one inventory record
-    size = models.CharField(max_length=20)
+    size = models.CharField(max_length=20, verbose_name="Velikost")
     quantity = models.PositiveIntegerField(default=1)
+    
 
     class Meta:
         verbose_name = "nový rozměr produktu"

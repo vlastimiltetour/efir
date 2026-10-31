@@ -49,10 +49,6 @@ class FilterForm(forms.Form):
         ("Podvazkový pas s gumičkami", "Podvazkový pas s gumičkami"),
         ("Bezkosticová podprsenka", "Bezkosticová podprsenka"),
         ("Podprsenka s kosticemi", "Podprsenka s kosticemi"),
-        (
-            "Podprsenka s kosticemi a otevřeným košíčkem",
-            "Podprsenka s kosticemi a otevřeným košíčkem",
-        ),
     ]
 
     @staticmethod
@@ -84,37 +80,79 @@ class FilterForm(forms.Form):
 
         return knickers + bras
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self, *args, **kwargs
+    ):  # TODO - vyresit kdyz se zmeni category a. uz neni dostupny filtr, pak vyresit
         super().__init__(*args, **kwargs)
 
+        filter_selections = {
+            "category": self.data.getlist("category") if self.data else [],
+            "cut": self.data.getlist("cut") if self.data else [],
+            "size": self.data.getlist("size") if self.data else [],
+            # "color": self.data.getlist("category") if self.data else [],
+        }
+
+        def get_filtered_queryset(base_qs, excluded_fields, mappings):
+            qs = base_qs
+            for field_name, values in filter_selections.items():
+                print("field name", field_name, values)
+                if values and field_name != excluded_fields:
+                    filter_kwargs = {mappings[field_name]: values}
+                    qs = qs.filter(**filter_kwargs)
+                    print("qs", qs)
+            return qs
+
+        category_mappings = {
+            "cut": "products__short_description__in",
+            "size": "products__inventory__size__in",
+        }
+
+        size_mappings = {
+            "category": "product__category__name__in",  # Jde přes product k názvu kategorie
+            "cut": "product__short_description__in",  # Jde přes product ke střihu
+        }
+
+        cut_mappings = {"category": "category__name__in", "size": "inventory__size__in"}
+
+        # if category
+        category_qs = get_filtered_queryset(
+            Category.objects.all(), "category", category_mappings
+        )
+
+        # if sizes
+        size_qs = get_filtered_queryset(Inventory.objects.all(), "size", size_mappings)
+
+        # if cut
+        cuts_qs = get_filtered_queryset(Product.objects.all(), "cut", cut_mappings)
+        # if color
+
         try:
-            all_sizes = Inventory.objects.all()
-            all_sizes = all_sizes.distinct()
-            all_sizes = all_sizes.values_list("size")
-            letters_only = [size[0].strip("()") for size in all_sizes if size[0]]
+            size_qs = size_qs.distinct()
+            size_qs = size_qs.values_list("size")
+            letters_only = [size[0].strip("()") for size in size_qs if size[0]]
             sorted_sizes = sorted(letters_only, key=self.custom_sort)
             resorted_sizes = self.prioritize_sizes(sorted_sizes)
             size_choices = [(size, size) for size in resorted_sizes]
 
-            products = Product.objects.all()
+            cuts_all = cuts_qs.values_list("short_description").distinct()
 
-            cuts_all = products.values_list("short_description").distinct()
             cuts_letters_only = [x[0].strip("()") for x in cuts_all if x[0]]
-            cuts_all_list = set(cuts_letters_only)
-            [(i, i) for i in cuts_all_list]
+            cuts_all_list = sorted(list(set(cuts_letters_only)))
+            cuts_all_list = [(i, i) for i in cuts_all_list]
 
-            categories = Category.objects.all()
-            categories = categories.values_list("name").distinct()
+            # categories = Category.objects.all()
+            categories = category_qs.values_list("name").distinct()
             categories = [name[0].strip("()") for name in categories]
             categories = [(i, i) for i in categories]
-            print('cateogires', categories)
+
         except ValueError as e:
-            print('error type of e', e)
+            print("error type of e", e)
             categories = []
 
-        self.fields["size_selection"] = forms.MultipleChoiceField(
-            widget=forms.CheckboxSelectMultiple,
+        self.fields["size"] = forms.MultipleChoiceField(
+            widget=forms.CheckboxSelectMultiple(attrs={"class": "size-options"}),
             choices=size_choices,
+            initial=self.data.getlist("size") if self.data else [],
             label="Velikost",
             required=False,
         )
@@ -133,19 +171,22 @@ class FilterForm(forms.Form):
             required=False,
         )
 
-        self.fields["cut_selection"] = forms.MultipleChoiceField(
-            widget=forms.CheckboxSelectMultiple,
-            choices=self.cut_choices_manual,
+        self.fields["cut"] = forms.MultipleChoiceField(
+            widget=forms.CheckboxSelectMultiple(attrs={"class": "cut-options"}),
+            choices=cuts_all_list,
+            initial=self.data.getlist("cut") if self.data else [],
             label="Volba střihu",
             required=False,
         )
 
-        self.fields["category_selection"] = forms.MultipleChoiceField(
-            widget=forms.CheckboxSelectMultiple,
+        self.fields["category"] = forms.MultipleChoiceField(
+            widget=forms.CheckboxSelectMultiple(attrs={"class": "category-options"}),
             choices=categories,
+            initial=self.data.getlist("category") if self.data else [],
             label="Volba kategorie",
             required=False,
         )
+
 
 class CreateSetForm(forms.Form):
     # captcha = ReCaptchaField()

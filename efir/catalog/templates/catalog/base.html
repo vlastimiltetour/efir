@@ -20,55 +20,55 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
     <!-- Google Tag Manager -->
-<script>
-  function loadTrackingScripts() {
-    // Load Google Tag Manager
-    (function (w, d, s, l, i) {
-      w[l] = w[l] || [];
-      w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-      var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s),
-        dl = l != 'dataLayer' ? '&l=' + l : '';
-      j.async = true;
-      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-      f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-5N26B6BM');
+  <script>
+    function loadTrackingScripts() {
+      // Load Google Tag Manager
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', 'GTM-5N26B6BM');
 
-    // Load Google Analytics
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-Y80MNY89M7');
-  }
+      // Load Google Analytics
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-Y80MNY89M7');
+    }
 
-  function unloadTrackingScripts() {
-    // Disable Google Tag Manager
-    window['dataLayer'] = [];
-    window['gtag'] = function () { window['dataLayer'].push(arguments); }
+    function unloadTrackingScripts() {
+      // Disable Google Tag Manager
+      window['dataLayer'] = [];
+      window['gtag'] = function () { window['dataLayer'].push(arguments); }
 
-    // Disable Google Analytics
-    gtag('js', new Date());
-    gtag('config', 'G-Y80MNY89M7');
-  }
+      // Disable Google Analytics
+      gtag('js', new Date());
+      gtag('config', 'G-Y80MNY89M7');
+    }
 
-  // Call the function to check cookie consent on page load
-  checkCookieConsent();
-</script>
-<!-- Begin Leadhub Tracking Pixel Code -->
-<script>
-  (function(w,d,x,n,u,t,p,f,s,o){f='LHInsights';w[n]=w[f]=w[f]||function(n,d){
-  (w[f].q=w[f].q||[]).push([n,d])};w[f].l=1*new Date();w[f].p=p;s=d.createElement(x);
-  s.async=1;s.src=u+'?t='+t+(p?'&p='+p:'');o=d.getElementsByTagName(x)[0];o.parentNode.insertBefore(s,o)
-  })(window,document,'script','lhi','//www.lhinsights.com/agent.js','vKMJ5Kr2RiKA5iR');
+    // Call the function to check cookie consent on page load
+    checkCookieConsent();
+  </script>
+  <!-- Begin Leadhub Tracking Pixel Code -->
+  <script>
+    (function(w,d,x,n,u,t,p,f,s,o){f='LHInsights';w[n]=w[f]=w[f]||function(n,d){
+    (w[f].q=w[f].q||[]).push([n,d])};w[f].l=1*new Date();w[f].p=p;s=d.createElement(x);
+    s.async=1;s.src=u+'?t='+t+(p?'&p='+p:'');o=d.getElementsByTagName(x)[0];o.parentNode.insertBefore(s,o)
+    })(window,document,'script','lhi','//www.lhinsights.com/agent.js','vKMJ5Kr2RiKA5iR');
 
-  lhi('pageview');
-</script>
-<!-- End Leadhub Pixel Code -->
+    lhi('pageview');
+  </script>
+  <!-- End Leadhub Pixel Code -->
 
 
-  <!-- Include Slick Carousel CSS -->
-  <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/> -->
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <!-- Include Slick Carousel CSS -->
+    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/> -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
 
     <!-- Include jQuery for Slick Carousel -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -103,7 +103,10 @@
   src="https://www.facebook.com/tr?id=1140332501205415&ev=PageView&noscript=1"
   /></noscript>
   <!-- End Meta Pixel Code -->
-    
+    {% block extra_css %}
+    {% endblock %}
+    {% block extra_js %}
+    {% endblock %}
   </head>
   
 

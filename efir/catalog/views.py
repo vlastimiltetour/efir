@@ -82,59 +82,6 @@ def home(request, category_slug=None):
     )
 
 
-def save_filters(request, category_slug=None):
-    if request.method == "POST":
-        filter_form = FilterForm(request.POST)
-        # print(request.POST)  # Print the entire POST data for debugging
-
-        if filter_form.is_valid():
-            cd = filter_form.cleaned_data
-
-            # these values are lists, wtf
-            zpusob_vyroby = cd["zpusob_vyroby"]
-            sort_by_price = cd["sort_by_price"]
-            size_selection = cd["size_selection"]
-            cut_selection = cd["cut_selection"]
-            category_selection = cd["category_selection"]
-
-            if category_selection != []:
-                request.session["category_session"] = category_selection
-
-            if zpusob_vyroby != []:
-                request.session["zpusob_vyroby_session"] = zpusob_vyroby
-
-            if sort_by_price != []:
-                for value in sort_by_price:
-                    request.session["sort_by_price_session"] = value
-
-            if "size_selection_session" not in request.session:
-                request.session["size_selection_session"] = []
-
-            if size_selection:
-                for val in size_selection:
-                    if val not in request.session["size_selection_session"]:
-                        request.session["size_selection_session"].append(val)
-                        request.session.save()
-
-            if "cut_selection_session" not in request.session:
-                request.session["cut_selection_session"] = []
-
-            # this is cut selection which allows more than 1
-            # if cut_selection:
-            #    for x in cut_selection:
-            #        if x not in request.session["cut_selection_session"]:
-            #            request.session["cut_selection_session"].append(x)
-            #            request.session.save()
-
-            # this is cut selection which allows only 1 value
-            if cut_selection:
-                for cut in cut_selection:
-                    request.session["cut_selection_session"].append(cut)
-                    request.session.save()
-
-    return redirect("catalog:katalog_vse")
-
-
 def show_session_contents(request):
     print("")
     print("Session Contents:")
@@ -145,202 +92,112 @@ def show_session_contents(request):
     return "These were the session contents"
 
 
+from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
+
+from inventory.models import Inventory
+
+from .forms import FilterForm
+from .models import Category, Product
+
+
 def catalog_product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all().exclude(name="Dárkové certifikáty")
+
+    # Základní queryset (vyfiltrujeme aktivní bez dárkových certifikátů)
     products = (
-        Product.objects.all()
+        Product.objects.filter(active=True)
         .exclude(category__name="Dárkové certifikáty")
-        .order_by("created")
         .filter(discount__isnull=True)
     )
+
     inventory = Inventory.objects.values("size").distinct().order_by("size")
+    filter_form = FilterForm(request.GET or None)
 
-    filter_form = FilterForm()
-
-    zpusob_vyroby_session = request.session.get("zpusob_vyroby_session", [])
-    size_selection_session = request.session.get("size_selection_session", [])
-    sort_by_price_session = request.session.get(
-        "sort_by_price_session", "-created"
-    )  # Set default here
-    cut_selection_session = request.session.get("cut_selection_session", [])
-    category_session = request.session.get("category_session", [])
-
-    # these are session contents
-    # print(show_session_contents(request))
+    size_selection = request.GET.getlist("size")
+    cut_selection = request.GET.getlist("cut")
+    zpusob_vyroby = request.GET.getlist(
+        "brand"
+    )  # nebo zpusob_vyroby podle vašich atributů
+    category_selection = request.GET.get("category")
+    sort_by = request.GET.get("sort", "-created")  # Výchozí řazení od nejnovějších
 
     query_filters = Q()
-    # Replace "created" with "-created" if necessary
-    if sort_by_price_session == "created":
-        sort_by_price_session = "-created"
-    print(request.session.items())  # Add this line to inspect session data
-
-    if category_session:
-        query_filters &= Q(category__name=category_session[0])
-
-    if cut_selection_session:
-        new_value = cut_selection_session[-1]
-        cut_selection_session = []
-        cut_selection_session = new_value
-
-        print(type(cut_selection_session))
-        if type(cut_selection_session) == str:
-            print("type 1")
-            if cut_selection_session == "Brazilky":
-                # Filter for products containing "Brazilky" but exclude those containing "Brazilky na gumičkách"
-                query_filters &= Q(short_description__iexact="Brazilky")
-                query_filters &= ~Q(short_description__iexact="Brazilky na gumičkách")
-                print("type 2")
-            elif cut_selection_session == "Podprsenka s kosticemi":
-                # Filter for products containing "Brazilky" but exclude those containing "Brazilky na gumičkách"
-                query_filters &= Q(short_description__iexact="Podprsenka s kosticemi")
-                query_filters &= ~Q(
-                    short_description__iexact="Podprsenka s kosticemi a otevřeným košíčkem"
-                )
-                print("type 3")
-
-            elif cut_selection_session == "Podvazkový pas s gumičkami":
-                # Filter for products containing "Brazilky" but exclude those containing "Brazilky na gumičkách"
-                query_filters &= Q(short_description__icontains=cut_selection_session)
-
-                print("type 6")
-
-            else:
-                query_filters &= Q(short_description__iexact=cut_selection_session)
-                print("type 4")
-        else:
-            print("type 5")
-            pass
-
-    if zpusob_vyroby_session:
-        query_filters &= Q(
-            zpusob_vyroby__size=zpusob_vyroby_session[0]
-        )  # Assuming zpusob_vyroby is a list
-
-    if size_selection_session:
-        query_filters &= Q(inventory__size__in=size_selection_session)
-
-    if sort_by_price_session == ([] or None):
-        sort_by_price_session = "-created"
-    elif type(sort_by_price_session) == str:
-        sort_by_price_session = sort_by_price_session
 
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
+        query_filters &= Q(category=category)
+    elif category_selection:
+        query_filters &= Q(category__name=category_selection)
 
-        products = (
-            products.filter(category=category)
-            .exclude(category__name="Dárkové certifikáty")
-            .filter(query_filters)
-            .order_by(sort_by_price_session)
-        )
+    # Střih (Cut)
+    if cut_selection:
+        # Pokud přišlo více střihů, použijeme __in
+        cut_q = Q()
+        for cut in cut_selection:
+            if cut == "Brazilky":
+                cut_q |= Q(short_description__iexact="Brazilky") & ~Q(
+                    short_description__iexact="Brazilky na gumičkách"
+                )
+            elif cut == "Podprsenka s kosticemi":
+                cut_q |= Q(short_description__iexact="Podprsenka s kosticemi") & ~Q(
+                    short_description__iexact="Podprsenka s kosticemi a otevřeným košíčkem"
+                )
+            elif cut == "Podvazkový pas s gumičkami":
+                cut_q |= Q(short_description__icontains=cut)
+            else:
+                cut_q |= Q(short_description__iexact=cut)
+        query_filters &= cut_q
 
-    else:
-        products = (
-            Product.objects.filter(query_filters)
-            .exclude(category__name="Dárkové certifikáty")
-            .order_by(sort_by_price_session)
-            .filter(active=True)
-            .filter(discount__isnull=True)
-        )
+    # Způsob výroby / Značka
+    if zpusob_vyroby:
+        query_filters &= Q(zpusob_vyroby__size__in=zpusob_vyroby)
 
-    sum_of = len(products)
-    print('sum of', sum_of)
+    # Velikosti
+    if size_selection:
+        query_filters &= Q(inventory__size__in=size_selection)
 
-    selected_sizes = clean_session_names(size_selection_session)
-    selected_zpubob_vyroby = clean_session_names(zpusob_vyroby_session)
-    selected_sorting = clean_session_names(sort_by_price_session)
-    selected_cuts = clean_session_names(cut_selection_session)
-    selected_category = clean_session_names(category_session)
+    # Applikujeme filtry na queryset
 
-    return render(
-        request,
-        "catalog/catalog.html",
-        {
-            "category": category,
-            "categories": categories,
-            "products": products,
-            "inventory": inventory,
-            "filter_form": filter_form,
-            "selected_sizes": selected_sizes,
-            "selected_zpubob_vyroby": selected_zpubob_vyroby,
-            "selected_sorting": selected_sorting,
-            "selected_cuts": selected_cuts,
-            "selected_category": selected_category,
-            "sum_of": sum_of,
-        },
-    )
+    products = products.filter(query_filters).distinct()
 
+    # 3. ŘAZENÍ
+    valid_sort_options = {
+        "price-asc": "price",
+        "price-dsc": "-price",
+        "name-asc": "name",
+        "name-dsc": "-name",
+        "newest": "-created",
+    }
+    order_by_field = valid_sort_options.get(sort_by, "-created")
+    products = products.order_by(order_by_field)
 
-def clean_session_names(session_values):
-    clean_translation_dict = {
-        "price": "Cena vzestupně",
-        "-price": "Cena sestupně",
-        "name": "Název A-Z",
-        "-name": "Název Z-A",
-        "created": "Nejnovější",
+    sum_of = products.count()
+
+    context = {
+        "category": category,
+        "categories": categories,
+        "products": products,
+        "inventory": inventory,
+        "filter_form": filter_form,
+        "sum_of": sum_of,
+        "selected_category": category_selection,
+        "selected_sizes": size_selection,
+        "selected_cuts": cut_selection,
+        "selected_sort": sort_by,
     }
 
-    for key in clean_translation_dict:
-        if key == session_values:
-            session_values = clean_translation_dict[key]
+    # 4. RESPONSE LOGIKA (AJAX / HTML Fragment vs. Celá stránka)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        # Pokud JS volá fetch, vrátíme jen vnitřní mřížku produktů
+        html = render_to_string("catalog/catalog.html", context, request=request)
+        return HttpResponse(html)
 
-    return (
-        str(session_values)
-        .replace("'", "")
-        .replace("[", "")
-        .replace("]", "")
-        .replace("[", "")
-        .replace("]", "")
-    )
-
-
-def delete_all_filters(request):
-    if request.method == "POST":
-        print("Before Deletion:", request.session.items())
-
-        to_delete = [
-            "size_selection_session",
-            "cut_selection_session",
-            "category_session",
-        ]
-        for key in to_delete:
-            if key in request.session:
-                del request.session[key]
-
-        if "sort_by_price_session" in request.session:
-            request.session["sort_by_price_session"] = "created"
-
-        print("After Deletion:", request.session.items())
-
-    return redirect("catalog:katalog_vse")
-
-
-def delete_selected_filter(request):
-    if request.method == "POST":
-        clean_translation_dict = {
-            "Cena vzestupně": "price",
-            "Cena sestupně": "-price",
-            "Název A-Z": "name",
-            "Název Z-A": "-name",
-        }
-
-        selected_filter = request.POST.get("selected_filter")
-
-        if selected_filter in clean_translation_dict:
-            selected_filter = clean_translation_dict[selected_filter]
-            if "sort_by_price_session" in request.session:
-                request.session["sort_by_price_session"] = "-created"
-
-        for session_key, session_value in request.session.items():
-            if isinstance(session_value, (list, str)):
-                if selected_filter in session_value:
-                    print("session_key", session_key)
-                    print("selected filter:", selected_filter)
-
-        del request.session[session_key]
-
-    return redirect("catalog:katalog_vse")
+    # Jinak vrátíme celou stránku (např. první načtení webu)
+    return render(request, "catalog/catalog.html", context)
 
 
 def product_detail(
@@ -367,7 +224,7 @@ def product_detail(
         if list_of_recommended:
             recommended = Product.objects.filter(id__in=list_of_recommended)
             recommended = recommended[:5]
-            recommended = [] # TODO tady je to vypnute
+            recommended = []  # TODO tady je to vypnute
     except ValueError:
         recommended = []
     except TypeError:
@@ -506,16 +363,16 @@ def recommended_products(product_id):
 
 def akce(request, token):
     if token == "aB3nK8mPq2":
-
         products = Product.objects.all().filter(active=True)
         discounted = Product.objects.exclude(discount__isnull=True).filter(active=True)
 
         print("these are akce discounts:", discounted)
 
         return render(
-            request, "catalog/akce.html", {"products": products, "discounted": discounted}
+            request,
+            "catalog/akce.html",
+            {"products": products, "discounted": discounted},
         )
-
 
 
 def discover_your_set(request):
