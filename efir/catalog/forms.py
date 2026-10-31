@@ -123,7 +123,7 @@ class FilterForm(forms.Form):
         size_qs = get_filtered_queryset(Inventory.objects.all(), "size", size_mappings)
 
         # if cut
-        cuts_qs = get_filtered_queryset(Product.objects.all(), "cut", cut_mappings)
+        cuts_qs = get_filtered_queryset(Product.objects.filter(active=True), "cut", cut_mappings)
         # if color
 
         try:
