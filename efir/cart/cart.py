@@ -193,7 +193,7 @@ class Cart:
             "AT": 180,
         }
 
-        zasilkovna_prices = {"CZ": 109, "SK": 119}
+        zasilkovna_prices = {"CZ": 125, "SK": 150}
 
         parcelbox = {"CZ": 109, "SK": 130, "PL": 130, "DE": 130}
 
