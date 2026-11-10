@@ -22,8 +22,10 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, null=False)
     price = models.DecimalField(max_digits=10, decimal_places=0)
-    short_description = models.TextField(max_length=50, blank=True)
-    long_description = models.TextField(blank=True)
+    short_description = models.TextField(
+        max_length=50, blank=True, verbose_name="Střih"
+    )
+    long_description = models.TextField(blank=True, verbose_name="Dlouhý popisek")
     skladem_na_miru = models.BooleanField(
         default=False, verbose_name="Skladem i na míru"
     )
@@ -113,10 +115,7 @@ class ProductVariant(models.Model):
     )
 
     color = models.ForeignKey(
-        "Color",
-        related_name="barvy",
-        on_delete=models.CASCADE,
-        verbose_name="Barva"
+        "Color", related_name="barvy", on_delete=models.CASCADE, verbose_name="Barva"
     )
 
     class Meta:
@@ -132,6 +131,9 @@ class Color(models.Model):
         verbose_name = "Barva"
         verbose_name_plural = "Barvy"
         ordering = ["name"]
+
+    def __str__(self):
+        return self.name
 
 
 class Category(models.Model):

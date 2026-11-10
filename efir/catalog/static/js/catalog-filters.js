@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         count += checkedInputs.length;
 
         if (count > 0) {
-            filtersCount.textContent = `[${count}]`;
+            filtersCount.textContent = `(${count})`;
             filtersCount.style.display = "inline"; // případně zvidit
         } else {
             filtersCount.textContent = '';

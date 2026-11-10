@@ -6,8 +6,9 @@ from inventory.models import Inventory
 
 from .models import (AboutPhoto1, AboutPhoto2, AboutPhoto3, AboutPhoto4,
                      BackgroundPhoto, Category, Certificate, Color, LeftPhoto,
-                     MappingSetNaMiru, Photo, Product, ProductSet, RightdPhoto,
-                     UniqueSetCreation, ZpusobVyroby, Color, ProductVariant)
+                     MappingSetNaMiru, Photo, Product, ProductSet,
+                     ProductVariant, RightdPhoto, UniqueSetCreation,
+                     ZpusobVyroby)
 
 
 # Register your models here.
@@ -70,9 +71,11 @@ class CategoryAdmin(admin.ModelAdmin):
 class ColorAdmin(admin.ModelAdmin):
     list_display = ["name"]
 
+
 class ProductVariantInline(admin.TabularInline):
     model = ProductVariant
     extra = 1  # Kolik prázdných řádků se ukáže navíc
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -121,14 +124,17 @@ class ProductAdmin(admin.ModelAdmin):
         if obj and obj.category and obj.category.name == "Dárkové certifikáty":
             return [CertificateInline(self.model, self.admin_site)]
         elif obj and obj.category and obj.category.name != "Dárkové certifikáty":
-            return PhotoAdmin(self.model, self.admin_site), InventoryInline(
-                self.model, self.admin_site), ProductVariantInline(self.model, self.admin_site)
+            return (
+                PhotoAdmin(self.model, self.admin_site),
+                InventoryInline(self.model, self.admin_site),
+                ProductVariantInline(self.model, self.admin_site),
+            )
 
         return (
             CertificateInline(self.model, self.admin_site),
             PhotoAdmin(self.model, self.admin_site),
             InventoryInline(self.model, self.admin_site),
-            ProductVariantInline(self.model, self.admin_site)
+            ProductVariantInline(self.model, self.admin_site),
         )
 
     def get_available_sizes_display(self, obj):
