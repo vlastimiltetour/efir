@@ -1,9 +1,11 @@
+from pathlib import Path
+
 from django.core.validators import EmailValidator
 from django.db import models
 from django.urls import reverse  # this is when calling an address by name
 
 from efir.settings.storage_backends import MediaStorage
-from pathlib import Path
+
 
 # Create your models here.
 class Product(models.Model):
@@ -20,8 +22,10 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, null=False)
     price = models.DecimalField(max_digits=10, decimal_places=0)
-    short_description = models.TextField(max_length=50, blank=True)
-    long_description = models.TextField(blank=True)
+    short_description = models.TextField(
+        max_length=50, blank=True, verbose_name="Střih"
+    )
+    long_description = models.TextField(blank=True, verbose_name="Dlouhý popisek")
     skladem_na_miru = models.BooleanField(
         default=False, verbose_name="Skladem i na míru"
     )
@@ -103,6 +107,35 @@ class Product(models.Model):
             return 0
 
 
+class ProductVariant(models.Model):
+    product = models.ForeignKey(
+        "Product",
+        related_name="variants",
+        on_delete=models.CASCADE,
+    )
+
+    color = models.ForeignKey(
+        "Color", related_name="barvy", on_delete=models.CASCADE, verbose_name="Barva"
+    )
+
+    class Meta:
+        verbose_name = "Varianta"
+        verbose_name_plural = "Varianty"
+        ordering = ["color"]
+
+
+class Color(models.Model):
+    name = models.CharField(max_length=50, unique=True, verbose_name="Barva")
+
+    class Meta:
+        verbose_name = "Barva"
+        verbose_name_plural = "Barvy"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class Category(models.Model):
     CATEGORY_CHOICES = [
         ("Celé sety", "Celé sety"),
@@ -173,11 +206,7 @@ class Photo(models.Model):
     def thumbnail_name(self):
         path = Path(self.photo.name)
 
-        return str(
-            path.with_name(
-            f"{path.stem}_thumb.webp"
-            )
-        )
+        return str(path.with_name(f"{path.stem}_thumb.webp"))
 
     @property
     def thumbnail_url(self):
@@ -332,8 +361,9 @@ class Certificate(models.Model):
         default=0,
         null=True,
     )
-    photo = models.ImageField(upload_to="catalog/%Y/%m/%d",
-        storage=MediaStorage(),blank=True)
+    photo = models.ImageField(
+        upload_to="catalog/%Y/%m/%d", storage=MediaStorage(), blank=True
+    )
 
     class Meta:
         verbose_name = "Detail certifikátu"

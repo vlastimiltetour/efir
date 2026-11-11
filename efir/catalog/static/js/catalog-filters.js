@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetButton = document.getElementById("reset-filters");
     const productGridContainer = document.getElementById("product-grid-container");
 
+    
 
     function setPanelOpen(open) {
         console.log('panel is open')
@@ -39,6 +40,28 @@ document.addEventListener("DOMContentLoaded", () => {
             
         }
     });
+
+    function UpdateFilterCount() {
+        const filtersCount = document.getElementById('filters-count');
+        if (!filtersCount) return;
+
+        let count = 0; // let je mutable 
+
+        const checkedInputs = document.querySelectorAll('.cut-options:checked, .size-options:checked, .category-options:checked');
+
+        count += checkedInputs.length;
+
+        if (count > 0) {
+            filtersCount.textContent = `(${count})`;
+            filtersCount.style.display = "inline"; // případně zvidit
+        } else {
+            filtersCount.textContent = '';
+            filtersCount.style.display = "none"; // případn
+        }
+
+       
+
+    };
 
     async function filterProducts() {
           //const category = document.getElementById("category");
@@ -119,6 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("change", (event) => {
         if (event.target.matches("#filter-panel select, #filter-panel input")) {
             filterProducts();
+            UpdateFilterCount();
         }
     });
 
@@ -137,8 +161,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         filterProducts();
+        UpdateFilterCount();
     }
 });
   filterProducts();
+  UpdateFilterCount();
 
 });

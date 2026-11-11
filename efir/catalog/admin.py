@@ -4,9 +4,12 @@ from django.http import HttpResponse  # for excel export
 
 from inventory.models import Inventory
 
-from .models import (BackgroundPhoto, Category, Certificate, LeftPhoto,
-                     MappingSetNaMiru, Photo, Product, ProductSet, RightdPhoto,
-                     UniqueSetCreation, ZpusobVyroby, AboutPhoto4, AboutPhoto3, AboutPhoto1, AboutPhoto2)
+from .models import (AboutPhoto1, AboutPhoto2, AboutPhoto3, AboutPhoto4,
+                     BackgroundPhoto, Category, Certificate, Color, LeftPhoto,
+                     MappingSetNaMiru, Photo, Product, ProductSet,
+                     ProductVariant, RightdPhoto, UniqueSetCreation,
+                     ZpusobVyroby)
+
 
 # Register your models here.
 class PhotoAdmin(admin.StackedInline):
@@ -37,26 +40,41 @@ class LeftPhotoAdmin(admin.ModelAdmin):
 class RightPhotoAdmin(admin.ModelAdmin):
     list_display = ["name"]
 
+
 @admin.register(AboutPhoto1)
 class AboutPhoto1Admin(admin.ModelAdmin):
     list_display = ["name"]
-    
+
+
 @admin.register(AboutPhoto2)
 class AboutPhoto2Admin(admin.ModelAdmin):
     list_display = ["name"]
+
 
 @admin.register(AboutPhoto3)
 class AboutPhoto3Admin(admin.ModelAdmin):
     list_display = ["name"]
 
+
 @admin.register(AboutPhoto4)
 class AboutPhoto4Admin(admin.ModelAdmin):
     list_display = ["name"]
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ["name", "slug"]
     prepopulated_fields = {"slug": ("name",)}
+
+
+@admin.register(Color)
+class ColorAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+
+
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
+    extra = 1  # Kolik prázdných řádků se ukáže navíc
 
 
 @admin.register(Product)
@@ -97,6 +115,7 @@ class ProductAdmin(admin.ModelAdmin):
         PhotoAdmin,
         InventoryInline,
         CertificateInline,
+        ProductVariantInline,
     ]  # this is creating inline to show photos
 
     def get_inline_instances(self, request, obj=None):
@@ -105,14 +124,17 @@ class ProductAdmin(admin.ModelAdmin):
         if obj and obj.category and obj.category.name == "Dárkové certifikáty":
             return [CertificateInline(self.model, self.admin_site)]
         elif obj and obj.category and obj.category.name != "Dárkové certifikáty":
-            return PhotoAdmin(self.model, self.admin_site), InventoryInline(
-                self.model, self.admin_site
+            return (
+                PhotoAdmin(self.model, self.admin_site),
+                InventoryInline(self.model, self.admin_site),
+                ProductVariantInline(self.model, self.admin_site),
             )
 
         return (
             CertificateInline(self.model, self.admin_site),
             PhotoAdmin(self.model, self.admin_site),
             InventoryInline(self.model, self.admin_site),
+            ProductVariantInline(self.model, self.admin_site),
         )
 
     def get_available_sizes_display(self, obj):
@@ -185,9 +207,9 @@ class UniqueSetCreationAdmin(admin.ModelAdmin):
 
     def export_to_excel(self, request, queryset):
         response = HttpResponse(content_type="application/ms-excel")
-        response["Content-Disposition"] = (
-            'attachment; filename="dotazniky_objev_set.xls"'
-        )
+        response[
+            "Content-Disposition"
+        ] = 'attachment; filename="dotazniky_objev_set.xls"'
 
         wb = xlwt.Workbook(encoding="utf-8")
         ws = wb.add_sheet("ObjevSet")

@@ -62,7 +62,7 @@ def home(request, category_slug=None):
     products = Product.objects.filter(active=True, category__name="Celé sety").exclude(
         category__name="Dárkové certifikáty"
     )[:9]
-    subscribe_form = SubscribeForm(request.POST)
+    subscribe_form = SubscribeForm(request.POST) 
 
     return render(
         request,
@@ -175,7 +175,7 @@ def catalog_product_list(request, category_slug=None):
     order_by_field = valid_sort_options.get(sort_by, "-created")
     products = products.order_by(order_by_field)
 
-    sum_of = products.count()
+    products_total = products.count()
 
     context = {
         "category": category,
@@ -183,7 +183,7 @@ def catalog_product_list(request, category_slug=None):
         "products": products,
         "inventory": inventory,
         "filter_form": filter_form,
-        "sum_of": sum_of,
+        "products_total": products_total,
         "selected_category": category_selection,
         "selected_sizes": size_selection,
         "selected_cuts": cut_selection,

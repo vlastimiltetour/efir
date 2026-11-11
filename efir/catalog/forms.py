@@ -99,7 +99,7 @@ class FilterForm(forms.Form):
                 if values and field_name != excluded_fields:
                     filter_kwargs = {mappings[field_name]: values}
                     qs = qs.filter(**filter_kwargs)
-                    print("qs", qs)
+                    print("qs, mappings:", mappings, field_name, qs)
             return qs
 
         category_mappings = {
@@ -114,6 +114,9 @@ class FilterForm(forms.Form):
 
         cut_mappings = {"category": "category__name__in", "size": "inventory__size__in"}
 
+        def get_productset_sizes():
+            pass
+
         # if category
         category_qs = get_filtered_queryset(
             Category.objects.all(), "category", category_mappings
@@ -123,12 +126,15 @@ class FilterForm(forms.Form):
         size_qs = get_filtered_queryset(Inventory.objects.all(), "size", size_mappings)
 
         # if cut
-        cuts_qs = get_filtered_queryset(Product.objects.filter(active=True), "cut", cut_mappings)
+        cuts_qs = get_filtered_queryset(
+            Product.objects.filter(active=True), "cut", cut_mappings
+        )
         # if color
 
         try:
             size_qs = size_qs.distinct()
             size_qs = size_qs.values_list("size")
+            # TODO here I can adjust to add productset sizes
             letters_only = [size[0].strip("()") for size in size_qs if size[0]]
             sorted_sizes = sorted(letters_only, key=self.custom_sort)
             resorted_sizes = self.prioritize_sizes(sorted_sizes)
