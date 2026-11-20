@@ -82,7 +82,7 @@ class FilterForm(forms.Form):
 
     def __init__(
         self, *args, **kwargs
-    ):  # TODO - vyresit kdyz se zmeni category a. uz neni dostupny filtr, pak vyresit
+    ):  
         super().__init__(*args, **kwargs)
 
         filter_selections = {
@@ -125,9 +125,9 @@ class FilterForm(forms.Form):
         # if sizes
         size_qs = get_filtered_queryset(Inventory.objects.all(), "size", size_mappings)
 
-        # if cut
+        # if cut # remove cele sety cuts
         cuts_qs = get_filtered_queryset(
-            Product.objects.filter(active=True), "cut", cut_mappings
+            Product.objects.exclude(category=4).filter(active=True), "cut", cut_mappings
         )
         # if color
 
@@ -140,7 +140,10 @@ class FilterForm(forms.Form):
             resorted_sizes = self.prioritize_sizes(sorted_sizes)
             size_choices = [(size, size) for size in resorted_sizes]
 
+            
             cuts_all = cuts_qs.values_list("short_description").distinct()
+            # TODO remove cuts from productsets 
+            print('cuts all', cuts_all)
 
             cuts_letters_only = [x[0].strip("()") for x in cuts_all if x[0]]
             cuts_all_list = sorted(list(set(cuts_letters_only)))
