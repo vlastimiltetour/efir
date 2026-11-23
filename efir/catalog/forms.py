@@ -143,8 +143,7 @@ class FilterForm(forms.Form):
             
             cuts_all = cuts_qs.values_list("short_description").distinct()
             # TODO remove cuts from productsets 
-            print('cuts all', cuts_all)
-
+    
             cuts_letters_only = [x[0].strip("()") for x in cuts_all if x[0]]
             cuts_all_list = sorted(list(set(cuts_letters_only)))
             cuts_all_list = [(i, i) for i in cuts_all_list]
