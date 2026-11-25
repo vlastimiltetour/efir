@@ -75,6 +75,7 @@ class Cart:
         override=None,
         certificate_from=None,
         certificate_to=None,
+        color=None,
     ):
         # Check if the product is already in the cart
 
@@ -105,6 +106,7 @@ class Cart:
             self.cart[cart_item_id] = {
                 "item_id": cart_item_id,
                 "product_id": product.id,
+                "color": str(color or ""),
                 "quantity": quantity,
                 "price": str(product.price),
                 "surcharge": str(surcharge),

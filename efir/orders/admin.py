@@ -246,6 +246,8 @@ class OrderAdmin(admin.ModelAdmin):
         item_details = []
         for item in items:
             item_details.append(f"{item.velikost}")
+            if item.color:
+                item_details.append(f"Barva: {item.color}")
             item_details.append(f"kalhotky_velikost_set: {item.kalhotky_velikost_set}")
             item_details.append(
                 f"podprsenka_velikost_set: {item.podprsenka_velikost_set}"

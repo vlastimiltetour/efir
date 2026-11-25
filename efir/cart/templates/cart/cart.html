@@ -291,6 +291,7 @@ async></script>
 
                         <h6 class="my-0">{{ product.name }}</h6>
                         <small id="product_size_type" name="product_size_type" class="text-muted">{{ item.zpusob_vyroby }}</small>
+                        {% if item.color %}<br><small class="text-muted">Barva: {{ item.color }}</small>{% endif %}
                         
                         <!-- if skladem-->
                         <small  class="text-muted">{{ item.velikost }} {{ item.kalhotky_velikost_set }} {{ item.podprsenka_velikost_set }} {{ item.pas_velikost_set }} 

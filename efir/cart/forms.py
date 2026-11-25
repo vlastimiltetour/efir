@@ -66,54 +66,6 @@ class CartAddProductForm(forms.Form):
         available_sizes = tuple(sorted(available_sizes))
         available_sizes = [(i, i) for i in available_sizes]
 
-        """obvod_hrudnik = tuple(product.obvod_hrudnik.values_list())
-        obvod_hrudnik_list = []
-        for item in obvod_hrudnik:
-            obvod_hrudnik_list.append(item)
-        obvod_hrudnik_list.append((0, "-"))
-        obvod_hrudnik_list = sorted(obvod_hrudnik_list)
-        """
-        """ obvod_hrudnik = tuple(product.obvod_hrudnik.values_list())
-        obvod_hrudnik_list = [(i[1], str(i[1])) for i in obvod_hrudnik]
-        obvod_hrudnik_list.append(("-", "-"))
-
-        obvod_prsa = tuple(product.obvod_prsa.values_list())
-        obvod_prsa_list = [(i[1], str(i[1])) for i in obvod_prsa]
-        obvod_prsa_list.append(("-", "-"))
-
-        def extract_numeric_part(value):
-            match = re.search(r"\d+", value)
-            if match:
-                return int(match.group())
-            else:
-                return float("inf")
-
-        # https://www.regular-expressions.info/refcapture.html
-        def extract_letter_part(value):
-            match = re.search(r"[A-Za-z]+", value)
-            if match:
-                return match.group()
-            else:
-                return ""
-
-        obvod_prsa_list = sorted(
-            obvod_prsa_list,
-            key=lambda x: (extract_numeric_part(x[1]), extract_letter_part(x[1]))
-            if x[1] != "-"
-            else (float("inf"), ""),
-        )
-
-        obvod_boky = tuple(product.obvod_boky.values_list())
-        obvod_boky_list = [(i[1], str(i[1])) for i in obvod_boky]
-        obvod_boky_list.append(("-", "-"))
-
-        obvod_body = tuple(product.obvod_body.values_list())
-        obvod_body_list = [(i[1], str(i[1])) for i in obvod_body]
-        obvod_body_list.append(("-", "-"))
-
-        obvod_body_list = sorted(
-            obvod_body_list, key=lambda x: int(x[1]) if x[1] != "-" else float("inf")
-        )"""
 
         zpusob_vyroby = tuple(product.zpusob_vyroby.values_list())
         zpusob_vyroby_list = [(i[1], str(i[1])) for i in zpusob_vyroby]
@@ -131,6 +83,30 @@ class CartAddProductForm(forms.Form):
             choices=available_sizes,
             initial="-",
             required=False,
+        )
+
+        available_colors = list(
+            product.variants.select_related("color")
+            .values_list("color__name", flat=True)
+            .distinct()
+        )
+
+        print(available_colors)
+        
+        color_choices = [(color, color) for color in available_colors]
+        if not available_colors:
+            color_choices = [("", "-")]
+
+        self.fields["color"] = forms.ChoiceField(
+            label="Barva",
+            choices=color_choices,
+            required=bool(available_colors),
+            widget=forms.Select(
+                attrs={
+                    "class": "form-select flex-grow-1 rounded-0",
+                    "style": "border-color: black",
+                }
+            ),
         )
 
         self.fields["zpusob_vyroby"] = forms.TypedChoiceField(

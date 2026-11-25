@@ -71,6 +71,7 @@ def cart_add(request, product_id):
             override=cd["override"],
             certificate_from=cd["certificate_from"],
             certificate_to=cd["certificate_to"],
+            color=cd["color"],
         )
         zpusob_vyroby = cd["zpusob_vyroby"]
         print("this is the form add to cart", {form})
@@ -243,6 +244,7 @@ def cart_detail(request, zasilkovna=True):
                             poznamka=item["poznamka"],
                             certificate_from=item["certificate_from"],
                             certificate_to=item["certificate_to"],
+                            color=item.get("color", ""),
                         )
 
                 else:
@@ -261,6 +263,7 @@ def cart_detail(request, zasilkovna=True):
                         poznamka=item["poznamka"],
                         certificate_from=item["certificate_from"],
                         certificate_to=item["certificate_to"],
+                        color=item.get("color", ""),
                     )
 
             order_items = OrderItem.objects.filter(order=order)

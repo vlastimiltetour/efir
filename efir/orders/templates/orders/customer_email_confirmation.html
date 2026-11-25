@@ -339,6 +339,7 @@ table.table td:nth-child(2), table.table th:nth-child(2) {
     <td style="text-align: left; padding: 8px;">
         <h6 style="margin: 0; font-size: 16px;">{{ item.product.name }}</h6>
         <small style="font-size: 14px; color: #777;">{{ item.product.category }}: {{ item.zpusob_vyroby }}</small>
+        {% if item.color %}<br><small style="font-size: 14px; color: #777;">Barva: {{ item.color }}</small>{% endif %}
     </td>
     <td style="text-align: center; padding: 8px;">{{ item.quantity }}<br><small style="font-size: 14px; color: #777;">Počet kusů</small></td>
     <td style="text-align: center; padding: 8px;">
