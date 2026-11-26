@@ -13,6 +13,8 @@ jobs:
     env:
       SECRET_KEY: ci-only-test-key
       DEBUG: "True"
+      RECAPTCHA_PUBLIC_KEY: ci-only-public-key
+      RECAPTCHA_PRIVATE_KEY: ci-only-private-key
 
     steps:
       - name: Check out repository
