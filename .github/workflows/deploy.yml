@@ -1,13 +1,41 @@
-name: Deploy to DigitalOcean
+name: Tests and deploy
 
 on:
   push:
-    branches:
-      - main
-      - master
+  pull_request:
+
+permissions:
+  contents: read
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ci-only-test-key
+      DEBUG: "True"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run tests
+        run: python -m pytest --no-migrations
+
   deploy:
+    needs: test
+    if: github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master')
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +71,7 @@ jobs:
             echo "Backup successfully created."
 
             # Pull the latest code from the repository
-            git pull origin master
+            git pull origin ${{ github.ref_name }}
 
             # Rebuild and restart Docker containers
             docker compose down
