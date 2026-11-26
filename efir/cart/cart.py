@@ -150,6 +150,7 @@ class Cart:
 
     def clear(self):
         del self.session[settings.CART_SESSION_ID]
+        self.cart = {}
         self.save()
 
     def get_shipping_price(self):

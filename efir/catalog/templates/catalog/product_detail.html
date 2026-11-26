@@ -404,7 +404,7 @@
                   </div>
                </div>
 
-               {% if product.category.name == 'Celé sety' %}
+               {% if product.category.name == 'Celé sety' %} <!-- #TODO COLOR -->
              
                <h1>{{ productset.name }}</h1>
 
@@ -413,7 +413,22 @@
                       <!-- Category Definition -->
                       <div style="display: block">
                         
-                 
+                   <!-- Barvy -->
+               {% if form.color.field.choices|length > 0 %}
+                <div id="sizes">
+                  <!-- Category Definition -->
+                  <div style="display: display;">
+                     <b>Barva</b>
+                     <div class="d-flex mb-3">
+                        <div class="col-6">
+                           <!-- Obvod boky field -->
+                           {{ form.color }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               {% endif %}
+               <!-- Barvy-->
                <p>Detaily Setu:</p>
                <ul>
                   <li>
@@ -517,8 +532,8 @@
 
             
                {% else %}
+               <!-- Barvy -->
                {% if form.color.field.choices|length > 0 %}
-               <!-- Start Barvy -->
                 <div id="sizes">
                   <!-- Category Definition -->
                   <div style="display: display;">
@@ -531,8 +546,8 @@
                      </div>
                   </div>
                </div>
-                <!-- end Barvy-->
                {% endif %}
+               <!-- Barvy-->
                <!-- Start Size Variables -->
                <div id="sizes">
                   <!-- Category Definition -->

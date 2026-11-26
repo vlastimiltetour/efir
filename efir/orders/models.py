@@ -197,7 +197,9 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1, verbose_name="Množství")
 
     zpusob_vyroby = models.CharField(max_length=50)
-    color = models.CharField(max_length=50, blank=True, default="", verbose_name="Barva")
+    color = models.CharField(
+        max_length=50, blank=True, default="", verbose_name="Barva"
+    )
     velikost = models.CharField(
         max_length=50, null=True, blank=True, verbose_name="Individuální velikost"
     )

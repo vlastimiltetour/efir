@@ -66,7 +66,6 @@ class CartAddProductForm(forms.Form):
         available_sizes = tuple(sorted(available_sizes))
         available_sizes = [(i, i) for i in available_sizes]
 
-
         zpusob_vyroby = tuple(product.zpusob_vyroby.values_list())
         zpusob_vyroby_list = [(i[1], str(i[1])) for i in zpusob_vyroby]
         zpusob_vyroby_list = sorted(zpusob_vyroby_list, reverse=True)
@@ -92,7 +91,7 @@ class CartAddProductForm(forms.Form):
         )
 
         print(available_colors)
-        
+
         color_choices = [(color, color) for color in available_colors]
         if not available_colors:
             color_choices = [("", "-")]
